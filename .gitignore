@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Tests snapshots
+src/tests/**/__snapshots__
+
+# package-lock
+package-lock.json
