@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
-import auth from '../store/reducers/auth';
+import auth from './reducers/auth';
 
 const composeEnhancers =
   process.env.NODE_ENV === 'development'
