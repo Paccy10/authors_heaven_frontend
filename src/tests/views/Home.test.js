@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import App from '../App';
+import Home from '../../views/Home';
 
-describe('<App /> component', () => {
-  const component = shallow(<App />);
+describe('<Home /> component', () => {
+  const component = shallow(<Home />);
 
   it('should render without crashing', () => {
     expect(component).toMatchSnapshot();

@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import App from '../App';
+import Login from '../../../views/auth/Login';
 
-describe('<App /> component', () => {
-  const component = shallow(<App />);
+describe('<Login /> component', () => {
+  const component = shallow(<Login />);
 
   it('should render without crashing', () => {
     expect(component).toMatchSnapshot();
