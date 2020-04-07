@@ -1,10 +1,14 @@
 import React from 'react';
+import { Route, Switch } from 'react-router-dom';
+import Home from './views/Home';
+import Login from './views/auth/Login';
 
 function App() {
   return (
-    <div>
-      <h1>Hello World</h1>
-    </div>
+    <Switch>
+      <Route exact path='/' component={Home} />
+      <Route path='/login' component={Login} />
+    </Switch>
   );
 }
 
