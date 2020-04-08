@@ -1,5 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
+@import 'variables';
+@import 'mixins';
+
+@import 'button';
+
+@import 'header';
+@import 'navbar';
+@import 'footer';
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.main-content {
+  min-height: 100%;
 }
