@@ -32,7 +32,7 @@ class Header extends Component {
             />
           </div>
           <div>
-            <Button className="btn btn-primary">
+            <Button className="btn btn-secondary">
               <i className="fa fa-search"></i>
               Search
             </Button>

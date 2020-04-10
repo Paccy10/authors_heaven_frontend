@@ -4,8 +4,14 @@
   }
 }
 
+@mixin medium_phone {
+  @media screen and (max-width: 800px) {
+    @content;
+  }
+}
+
 @mixin phone {
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 414px) {
     @content;
   }
 }

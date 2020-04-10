@@ -1,5 +1,5 @@
 .header {
-  background-color: color(light);
+  background-color: color(primary);
   padding: 20px 100px;
   display: flex;
   width: 100%;
@@ -33,7 +33,7 @@
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      background-color: color(primary);
+      background-color: color(light);
       box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
         0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 
@@ -51,7 +51,7 @@
       }
 
       a {
-        color: color(light);
+        color: color(primary);
         font-size: 22px;
 
         @include small_phone {
@@ -80,7 +80,7 @@
     .input-field {
       padding: 8px 12px;
       outline: none;
-      border: 1px solid color(primary);
+      border: 1px solid color(light);
       border-radius: 4px;
       margin-right: 7px;
       width: 250px;

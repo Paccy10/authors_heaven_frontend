@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import logo from '../../../assets/img/logo.png';
 
 class Navbar extends Component {
   state = {
@@ -14,8 +15,9 @@ class Navbar extends Component {
     return (
       <header className="navbar">
         <Link to="/" className="logo">
-          <span>Authors&apos; </span>
-          <span>Heaven</span>
+          <div>
+            <img src={logo} alt="" />
+          </div>
         </Link>
         <div
           className={`menu-toggle ${this.state.showMenu ? 'active' : ''}`}
