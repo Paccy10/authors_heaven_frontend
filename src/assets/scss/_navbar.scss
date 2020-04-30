@@ -19,9 +19,25 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 2px;
+
+    @include small_phone {
+      margin-top: 11px;
+    }
+    @include phone {
+      margin-top: 7px;
+    }
 
     div {
       height: 60px;
+
+      @include phone {
+        height: 45px;
+      }
+
+      @include small_phone {
+        height: 40px;
+      }
 
       img {
         height: 100%;

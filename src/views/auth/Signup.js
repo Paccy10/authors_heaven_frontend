@@ -4,7 +4,7 @@ import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props
 import GoogleLogin from 'react-google-login';
 import { Link } from 'react-router-dom';
 
-export class Login extends Component {
+class Signup extends Component {
   responseFacebook(response) {
     console.log(response);
   }
@@ -21,9 +21,25 @@ export class Login extends Component {
             <Card>
               <CardContent className="auth-card">
                 <div className="title">
-                  <h2>Sign In</h2>
+                  <h2>Sign Up</h2>
                 </div>
                 <form>
+                  <TextField
+                    id="firstname"
+                    label="Firstname"
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    className="input-field"
+                  />
+                  <TextField
+                    id="lastname"
+                    label="Lastname"
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    className="input-field"
+                  />
                   <TextField
                     id="email"
                     label="Email"
@@ -42,18 +58,23 @@ export class Login extends Component {
                     className="input-field"
                     autoComplete="new-password"
                   />
+                  <TextField
+                    type="password"
+                    id="confirmPassword"
+                    label="Confirm Password"
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    className="input-field"
+                  />
                   <Button variant="contained" color="primary" fullWidth>
-                    Login
+                    Register
                   </Button>
                 </form>
 
                 <div className="links">
                   <span>
-                    <Link to="/forgot-password">Forgot Password</Link>
-                  </span>
-                  <span>
-                    Don&apos;t have an account?{' '}
-                    <Link to="/signup">Register</Link>
+                    Already have an account? <Link to="/login">Login</Link>
                   </span>
                 </div>
 
@@ -69,7 +90,7 @@ export class Login extends Component {
                             disabled={renderProps.disabled}
                             className="btn btn-facebook"
                           >
-                            <i className="fab fa-facebook"></i> Login with
+                            <i className="fab fa-facebook"></i> Signup with
                             Facebook
                           </button>
                         )}
@@ -87,7 +108,7 @@ export class Login extends Component {
                             disabled={renderProps.disabled}
                             className="btn btn-google"
                           >
-                            <i className="fab fa-google-plus"></i> Login with
+                            <i className="fab fa-google-plus"></i> Signup with
                             Google
                           </button>
                         )}
@@ -106,4 +127,4 @@ export class Login extends Component {
   }
 }
 
-export default Login;
+export default Signup;

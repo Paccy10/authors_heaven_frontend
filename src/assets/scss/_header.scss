@@ -8,6 +8,10 @@
     padding: 20px 60px;
   }
 
+  @include nexus_tablet {
+    flex-direction: column;
+  }
+
   @include phone {
     padding: 20px;
     flex-direction: column;
@@ -17,6 +21,12 @@
     flex: 1;
     display: flex;
     align-items: center;
+
+    @include nexus_tablet {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
 
     @include phone {
       display: flex;
@@ -62,6 +72,9 @@
 
     .instagram-icon,
     .twitter-icon {
+      @include medium_phone {
+        margin-right: 30px;
+      }
       @include phone {
         margin-right: 50px;
       }
@@ -72,6 +85,10 @@
     flex: 1;
     display: flex;
     justify-content: flex-end;
+
+    @include nexus_tablet {
+      justify-content: center;
+    }
 
     @include phone {
       justify-content: center;
@@ -91,18 +108,12 @@
       }
 
       @include phone {
-        width: 220px;
+        width: 200px;
       }
 
       @include small_phone {
         width: 180px;
         padding: 8px 12px;
-      }
-    }
-
-    button {
-      i {
-        margin-right: 5px;
       }
     }
   }

@@ -3,10 +3,10 @@ import { shallow } from 'enzyme';
 import { Grid } from '@material-ui/core';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import GoogleLogin from 'react-google-login';
-import Login from '../../../views/auth/Login';
+import Signup from '../../../views/auth/Signup';
 
-describe('<Login /> component', () => {
-  const component = shallow(<Login />);
+describe('<Signup /> component', () => {
+  const component = shallow(<Signup />);
 
   it('should render without crashing', () => {
     expect(component).toMatchSnapshot();

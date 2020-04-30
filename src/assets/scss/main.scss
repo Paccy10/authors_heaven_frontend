@@ -10,6 +10,7 @@
 @import 'footer';
 
 @import 'home';
+@import 'auth';
 
 * {
   margin: 0;
@@ -29,6 +30,7 @@ body {
 
 .main-content {
   min-height: 100%;
+  background-color: color(accent);
 
   .container {
     padding: 40px 100px;

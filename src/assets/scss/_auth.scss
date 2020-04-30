@@ -1,0 +1,51 @@
+.auth-card {
+  .title {
+    text-align: center;
+    background-color: color(primary);
+    color: color(light);
+    padding: 10px;
+
+    @include phone {
+      font-size: 12px;
+    }
+  }
+
+  form {
+    margin-top: 20px;
+
+    .input-field {
+      margin: 15px 0;
+    }
+  }
+
+  .social-buttons {
+    margin-top: 20px;
+
+    button:nth-child(1) {
+      width: 100%;
+    }
+  }
+
+  .links {
+    margin-top: 10px;
+
+    span {
+      display: block;
+
+      &:nth-child(1) {
+        margin-bottom: 5px;
+      }
+
+      a {
+        text-decoration: none;
+        color: color(secondary);
+
+        &:hover {
+          color: color(primary);
+          transition: 0.2s;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
