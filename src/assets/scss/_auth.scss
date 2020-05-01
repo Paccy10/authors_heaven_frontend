@@ -1,8 +1,8 @@
 .auth-card {
   .title {
     text-align: center;
-    background-color: color(primary);
-    color: color(light);
+    // background-color: color(primary);
+    color: color(primary);
     padding: 10px;
 
     @include phone {
@@ -14,7 +14,7 @@
     margin-top: 20px;
 
     .input-field {
-      margin: 15px 0;
+      margin-bottom: 20px;
     }
   }
 

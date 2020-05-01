@@ -56,4 +56,21 @@ describe('<Login /> component', () => {
     expect(button).toHaveLength(1);
     expect(responseGoogle).toHaveBeenCalled();
   });
+
+  it('should call inputChangeHandler method when the input value is changed', () => {
+    const inputChangeHandler = jest.spyOn(
+      component.instance(),
+      'inputChangeHandler'
+    );
+    component.instance().forceUpdate();
+
+    const event = {
+      target: { value: 'email' }
+    };
+
+    const input = component.find('Input').at(0);
+    input.simulate('change', event);
+    expect(input.length).toBe(1);
+    expect(inputChangeHandler).toHaveBeenCalled();
+  });
 });
