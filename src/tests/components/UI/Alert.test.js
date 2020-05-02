@@ -32,14 +32,14 @@ describe('<Alert /> Component', () => {
     expect(component).toMatchSnapshot();
   });
 
-  it('should render alert with Danger alert Type', () => {
-    props.alert.alertType = 'Danger';
+  it('should render alert with success alert Type', () => {
+    props.alert.alertType = 'success';
     component = shallow(<CustomAlert {...props} />);
     expect(component).toMatchSnapshot();
   });
 
-  it('should render alert with Warning alert Type', () => {
-    props.alert.alertType = 'Warning';
+  it('should render alert with error alert Type', () => {
+    props.alert.alertType = 'error';
     component = shallow(<CustomAlert {...props} />);
     expect(component).toMatchSnapshot();
   });

@@ -6,7 +6,7 @@ import GoogleLogin from 'react-google-login';
 import ConnectedSignup, { Signup } from '../../../views/auth/Signup';
 import { mockStore } from '../../store';
 
-const props = {
+let props = {
   onSignup: jest.fn(),
   onSetAlert: jest.fn()
 };
@@ -17,9 +17,13 @@ describe('<Signup /> component', () => {
   let store;
 
   beforeAll(() => {
-    const initialState = {};
+    const initialState = {
+      auth: {
+        loading: false
+      }
+    };
     store = mockStore(initialState);
-    wrapper = shallow(<ConnectedSignup store={store} />);
+    wrapper = shallow(<ConnectedSignup store={store} />).dive();
   });
 
   it('should render without crashing', () => {
@@ -88,7 +92,121 @@ describe('<Signup /> component', () => {
     expect(inputChangeHandler).toHaveBeenCalled();
   });
 
+  it('should check if form is valid', () => {
+    component.setState({ formIsValid: false });
+    const formSubmitHandler = jest.spyOn(
+      component.instance(),
+      'formSubmitHandler'
+    );
+    component.instance().forceUpdate();
+
+    const fakeEvent = { preventDefault: () => {} };
+    const form = component.find(Button);
+    form.simulate('click', fakeEvent);
+    expect(form.length).toBe(1);
+    expect(formSubmitHandler).toHaveBeenCalled();
+  });
+
   it('should call formSubmitHandler method when the form  is submitted', () => {
+    component.setState({
+      form: {
+        firstname: {
+          elementType: 'TextField',
+          elementConfig: {
+            type: 'text',
+            name: 'firstname',
+            label: 'Firstname',
+            variant: 'outlined',
+            size: 'small',
+            fullWidth: true
+          },
+          value: 'firstname',
+          validation: {
+            required: true
+          },
+          valid: true,
+          helperText: '',
+          touched: true
+        },
+        lastname: {
+          elementType: 'TextField',
+          elementConfig: {
+            type: 'text',
+            name: 'lastname',
+            label: 'Lastname',
+            variant: 'outlined',
+            size: 'small',
+            fullWidth: true
+          },
+          value: 'lastname',
+          validation: {
+            required: true
+          },
+          valid: true,
+          helperText: '',
+          touched: true
+        },
+        email: {
+          elementType: 'TextField',
+          elementConfig: {
+            type: 'email',
+            name: 'email',
+            label: 'E-mail Address',
+            variant: 'outlined',
+            size: 'small',
+            fullWidth: true
+          },
+          value: 'email@app.com',
+          validation: {
+            required: true,
+            isEmail: true
+          },
+          valid: true,
+          helperText: '',
+          touched: true
+        },
+        password: {
+          elementType: 'TextField',
+          elementConfig: {
+            type: 'password',
+            name: 'password',
+            label: 'Password',
+            variant: 'outlined',
+            size: 'small',
+            fullWidth: true,
+            autoComplete: 'new-password'
+          },
+          value: 'password',
+          validation: {
+            required: true,
+            minLength: 8
+          },
+          valid: true,
+          helperText: '',
+          touched: true
+        },
+
+        confirmPassword: {
+          elementType: 'TextField',
+          elementConfig: {
+            type: 'password',
+            name: 'confirmPassword',
+            label: 'Confirm Password',
+            variant: 'outlined',
+            size: 'small',
+            fullWidth: true
+          },
+          value: 'password',
+          validation: {
+            required: true
+          },
+          valid: true,
+          helperText: '',
+          touched: true
+        }
+      },
+      formIsValid: true
+    });
     const formSubmitHandler = jest.spyOn(
       component.instance(),
       'formSubmitHandler'
@@ -106,15 +224,99 @@ describe('<Signup /> component', () => {
   it('should check if passwords match', () => {
     component.setState({
       form: {
+        firstname: {
+          elementType: 'TextField',
+          elementConfig: {
+            type: 'text',
+            name: 'firstname',
+            label: 'Firstname',
+            variant: 'outlined',
+            size: 'small',
+            fullWidth: true
+          },
+          value: 'firstname',
+          validation: {
+            required: true
+          },
+          valid: true,
+          helperText: '',
+          touched: true
+        },
+        lastname: {
+          elementType: 'TextField',
+          elementConfig: {
+            type: 'text',
+            name: 'lastname',
+            label: 'Lastname',
+            variant: 'outlined',
+            size: 'small',
+            fullWidth: true
+          },
+          value: 'lastname',
+          validation: {
+            required: true
+          },
+          valid: true,
+          helperText: '',
+          touched: true
+        },
+        email: {
+          elementType: 'TextField',
+          elementConfig: {
+            type: 'email',
+            name: 'email',
+            label: 'E-mail Address',
+            variant: 'outlined',
+            size: 'small',
+            fullWidth: true
+          },
+          value: 'email@app.com',
+          validation: {
+            required: true,
+            isEmail: true
+          },
+          valid: true,
+          helperText: '',
+          touched: true
+        },
         password: {
           elementType: 'TextField',
-          elementConfig: {},
-          value: 'pass'
+          elementConfig: {
+            type: 'password',
+            name: 'password',
+            label: 'Password',
+            variant: 'outlined',
+            size: 'small',
+            fullWidth: true,
+            autoComplete: 'new-password'
+          },
+          value: 'password',
+          validation: {
+            required: true,
+            minLength: 8
+          },
+          valid: true,
+          helperText: '',
+          touched: true
         },
+
         confirmPassword: {
           elementType: 'TextField',
-          elementConfig: {},
-          value: 'password'
+          elementConfig: {
+            type: 'password',
+            name: 'confirmPassword',
+            label: 'Confirm Password',
+            variant: 'outlined',
+            size: 'small',
+            fullWidth: true
+          },
+          value: 'confirmpassword',
+          validation: {
+            required: true
+          },
+          valid: true,
+          helperText: '',
+          touched: true
         }
       }
     });
@@ -133,8 +335,26 @@ describe('<Signup /> component', () => {
 
   it('should map dispatch to props', () => {
     wrapper.simulate('setAlert');
+    wrapper.simulate('signup');
 
     const actions = store.getActions();
-    expect(actions.length).toEqual(1);
+    expect(actions.length).toEqual(2);
+  });
+
+  it('should call componentWillReceiveProps with different status prop', () => {
+    component.setState({
+      form: {
+        password: {
+          elementType: 'TextField',
+          elementConfig: {},
+          value: 'pass',
+          valid: true,
+          touched: true
+        }
+      }
+    });
+    component.setProps({ status: 'success' });
+    props = component.instance().props;
+    expect(props.status).toBe('success');
   });
 });

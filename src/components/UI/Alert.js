@@ -12,12 +12,18 @@ export class CustomAlert extends Component {
 
   render() {
     const { alert } = this.props;
+    let title;
+
+    if (alert) {
+      if (alert.alertType === 'success') title = 'Success';
+      if (alert.alertType === 'error') title = 'Error';
+    }
 
     return (
       alert.message !== null &&
       alert.alertType !== null && (
         <Alert severity={alert.alertType} onClose={this.onClose}>
-          <AlertTitle>Error</AlertTitle>
+          <AlertTitle>{title}</AlertTitle>
           {alert.message}
         </Alert>
       )

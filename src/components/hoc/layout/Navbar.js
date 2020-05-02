@@ -4,7 +4,7 @@ import logo from '../../../assets/img/logo.png';
 
 class Navbar extends Component {
   state = {
-    showMenu: false,
+    showMenu: false
   };
 
   onShowMenu = () => {
@@ -41,12 +41,12 @@ class Navbar extends Component {
               </NavLink>
             </li>
             <li>
-              <NavLink activeClassName="active" to="/login">
+              <NavLink activeClassName="active" to="/auth/login">
                 Login
               </NavLink>
             </li>
             <li>
-              <NavLink activeClassName="active" to="/signup">
+              <NavLink activeClassName="active" to="/auth/signup">
                 Signup
               </NavLink>
             </li>

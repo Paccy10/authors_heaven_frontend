@@ -1,5 +1,12 @@
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
-import { Grid, Card, CardContent, Button } from '@material-ui/core';
+import {
+  Grid,
+  Card,
+  CardContent,
+  Button,
+  CircularProgress
+} from '@material-ui/core';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import GoogleLogin from 'react-google-login';
 import { Link } from 'react-router-dom';
@@ -111,6 +118,21 @@ export class Signup extends Component {
     formIsValid: false
   };
 
+  UNSAFE_componentWillReceiveProps(nextprops) {
+    if (nextprops.status === 'success') {
+      const updatedForm = {
+        ...this.state.form
+      };
+      for (const inputIdentifier in updatedForm) {
+        updatedForm[inputIdentifier].value = '';
+        updatedForm[inputIdentifier].valid = false;
+        updatedForm[inputIdentifier].touched = false;
+      }
+
+      this.setState({ form: updatedForm, formIsValid: false });
+    }
+  }
+
   inputChangeHandler = (event, inputName) => {
     const updatedForm = {
       ...this.state.form,
@@ -135,19 +157,26 @@ export class Signup extends Component {
     this.setState({ form: updatedForm, formIsValid });
   };
 
-  formSubmitHandler = event => {
-    event.preventDefault();
-    const { onSetAlert } = this.props;
+  formSubmitHandler = () => {
+    const { onSetAlert, onSignup } = this.props;
     if (!this.state.formIsValid) {
       onSetAlert('Please fill all the required fields.', 'error');
+      return;
     }
+
+    const formData = {
+      firstname: this.state.form.firstname.value,
+      lastname: this.state.form.lastname.value,
+      email: this.state.form.email.value,
+      password: this.state.form.password.value
+    };
 
     if (
       this.state.form.password.value !== this.state.form.confirmPassword.value
     ) {
       onSetAlert('Passwords do not match.', 'error');
     } else {
-      console.log('Good to go');
+      onSignup(formData);
     }
   };
 
@@ -181,6 +210,8 @@ export class Signup extends Component {
       />
     ));
 
+    const { loading } = this.props;
+
     return (
       <div className="container">
         <Grid container justify="center">
@@ -198,8 +229,13 @@ export class Signup extends Component {
                     color="primary"
                     fullWidth
                     onClick={this.formSubmitHandler}
+                    disabled={loading}
                   >
-                    Register
+                    {loading ? (
+                      <CircularProgress color="primary" size={23} />
+                    ) : (
+                      'Register'
+                    )}
                   </Button>
                 </form>
 
@@ -259,12 +295,20 @@ export class Signup extends Component {
 }
 
 Signup.propTypes = {
-  onSetAlert: PropTypes.func
+  onSetAlert: PropTypes.func,
+  onSignup: PropTypes.func.isRequired,
+  loading: PropTypes.bool
 };
+
+const mapStateToProps = state => ({
+  loading: state.auth.loading,
+  status: state.auth.status
+});
 
 const mapDispatchToProps = dispatch => ({
   onSetAlert: (message, alertType) =>
-    dispatch(actions.setAlert(message, alertType))
+    dispatch(actions.setAlert(message, alertType)),
+  onSignup: formData => dispatch(actions.signup(formData))
 });
 
-export default connect(null, mapDispatchToProps)(Signup);
+export default connect(mapStateToProps, mapDispatchToProps)(Signup);
