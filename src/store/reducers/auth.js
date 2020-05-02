@@ -14,6 +14,7 @@ export default function (state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
     case actionTypes.SIGNUP_START:
+    case actionTypes.ACTIVATE_START:
       return updateObject(state, {
         status: null,
         message: null,
@@ -23,14 +24,15 @@ export default function (state = initialState, action) {
       });
 
     case actionTypes.SIGNUP_SUCCESS:
+    case actionTypes.ACTIVATE_SUCCESS:
       return updateObject(state, {
         status: payload.status,
         message: payload.message,
-        user: payload.user,
         loading: false
       });
 
     case actionTypes.SIGNUP_FAIL:
+    case actionTypes.ACTIVATE_FAIL:
       return updateObject(state, {
         status: payload.status,
         errors: payload.errors,

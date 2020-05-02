@@ -6,3 +6,7 @@ export const REMOVE_ALERT = 'REMOVE_ALERT';
 export const SIGNUP_START = 'SIGNUP_START';
 export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
 export const SIGNUP_FAIL = 'SIGNUP_FAIL';
+
+export const ACTIVATE_START = 'ACTIVATE_START';
+export const ACTIVATE_SUCCESS = 'ACTIVATE_SUCCESS';
+export const ACTIVATE_FAIL = 'ACTIVATE_FAIL';
