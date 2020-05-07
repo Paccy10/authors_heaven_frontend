@@ -15,6 +15,7 @@ export default function (state = initialState, action) {
   switch (type) {
     case actionTypes.SIGNUP_START:
     case actionTypes.ACTIVATE_START:
+    case actionTypes.LOGIN_START:
       return updateObject(state, {
         status: null,
         message: null,
@@ -31,8 +32,18 @@ export default function (state = initialState, action) {
         loading: false
       });
 
+    case actionTypes.LOGIN_SUCCESS:
+      return updateObject(state, {
+        status: payload.status,
+        message: payload.message,
+        token: payload.token,
+        user: payload.user,
+        loading: false
+      });
+
     case actionTypes.SIGNUP_FAIL:
     case actionTypes.ACTIVATE_FAIL:
+    case actionTypes.LOGIN_FAIL:
       return updateObject(state, {
         status: payload.status,
         errors: payload.errors,

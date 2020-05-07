@@ -86,3 +86,97 @@ export const activate = token => {
       });
   };
 };
+
+export const loginStart = () => ({
+  type: actionTypes.LOGIN_START
+});
+
+export const loginSuccess = (status, message, token, user) => ({
+  type: actionTypes.LOGIN_SUCCESS,
+  payload: {
+    status,
+    message,
+    token,
+    user
+  }
+});
+
+export const loginFail = (status, errors) => ({
+  type: actionTypes.LOGIN_FAIL,
+  payload: {
+    status,
+    errors
+  }
+});
+
+export const logout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('expirationDate');
+  localStorage.removeItem('user');
+  return { type: actionTypes.LOGOUT };
+};
+
+export const checkAuthTimeout = expirationTime => {
+  return dispatch => {
+    setTimeout(() => {
+      dispatch(logout());
+    }, expirationTime * 1000);
+  };
+};
+
+export const login = formData => {
+  return dispatch => {
+    dispatch(loginStart());
+
+    return axios
+      .post('/auth/login', formData)
+      .then(response => {
+        const expirationDate = new Date(new Date().getTime() + 86400 * 1000);
+        localStorage.setItem('token', response.data.data.token);
+        localStorage.setItem('expirationDate', expirationDate);
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+        dispatch(
+          loginSuccess(
+            response.data.status,
+            response.data.message,
+            response.data.data.token,
+            response.data.data.user
+          )
+        );
+        dispatch(checkAuthTimeout(86400));
+      })
+      .catch(error => {
+        if (error.response) {
+          dispatch(
+            loginFail(error.response.data.status, error.response.data.errors)
+          );
+          error.response.data.errors.map(err => {
+            dispatch(actions.setAlert(err.msg, 'error'));
+          });
+        }
+      });
+  };
+};
+
+export const authCheckState = () => {
+  return dispatch => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      dispatch(logout());
+    } else {
+      const expirationDate = new Date(localStorage.getItem('expirationDate'));
+      if (expirationDate <= new Date()) {
+        dispatch(logout());
+      } else {
+        const user = JSON.parse(localStorage.getItem('user'));
+        dispatch(loginSuccess(null, null, token, user));
+        dispatch(
+          checkAuthTimeout(
+            (expirationDate.getTime() - new Date().getTime()) / 1000
+          )
+        );
+      }
+    }
+  };
+};

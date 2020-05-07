@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
-import { Grid, Card, CardContent, Button } from '@material-ui/core';
+import {
+  Grid,
+  Card,
+  CardContent,
+  Button,
+  CircularProgress
+} from '@material-ui/core';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import GoogleLogin from 'react-google-login';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import Input from '../../components/UI/Input';
 import validate from '../../utils/validation';
 import Alert from '../../components/UI/Alert';
+import * as actions from '../../store/actions';
 
 export class Login extends Component {
   state = {
@@ -76,6 +85,19 @@ export class Login extends Component {
     this.setState({ form: updatedForm, formIsValid });
   };
 
+  formSubmitHandler = () => {
+    const { onLogin, onSetAlert } = this.props;
+    if (!this.state.formIsValid) {
+      onSetAlert('Please fill all the required fields.', 'error');
+      return;
+    }
+    const formData = {
+      email: this.state.form.email.value,
+      password: this.state.form.password.value
+    };
+    onLogin(formData);
+  };
+
   responseFacebook(response) {
     console.log(response);
   }
@@ -85,6 +107,7 @@ export class Login extends Component {
   }
 
   render() {
+    const { loading, isAuthenticated } = this.props;
     const formElementsArray = [];
     for (const key in this.state.form) {
       formElementsArray.push({
@@ -106,6 +129,10 @@ export class Login extends Component {
       />
     ));
 
+    if (isAuthenticated) {
+      return <Redirect to="/" />;
+    }
+
     return (
       <div className="container">
         <Grid container justify="center">
@@ -118,8 +145,18 @@ export class Login extends Component {
                 <Alert />
                 <form>
                   {form}
-                  <Button variant="contained" color="primary" fullWidth>
-                    Login
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    onClick={this.formSubmitHandler}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <CircularProgress color="primary" size={23} />
+                    ) : (
+                      'Login'
+                    )}
                   </Button>
                 </form>
 
@@ -182,4 +219,23 @@ export class Login extends Component {
   }
 }
 
-export default Login;
+Login.propTypes = {
+  onSetAlert: PropTypes.func,
+  onLogin: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  isAuthenticated: PropTypes.bool
+};
+
+const mapStateToProps = state => ({
+  loading: state.auth.loading,
+  authRedirectPath: state.auth.authRedirectPath,
+  isAuthenticated: state.auth.token !== null
+});
+
+const mapDispatchToProps = dispatch => ({
+  onSetAlert: (message, alertType) =>
+    dispatch(actions.setAlert(message, alertType)),
+  onLogin: FormData => dispatch(actions.login(FormData))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -87,6 +87,7 @@
       margin: 0;
       padding: 0;
       display: flex;
+      position: relative;
 
       @include phone;
       @include medium_phone {
@@ -95,11 +96,12 @@
 
       li {
         list-style: none;
+        margin: 0 5px;
 
         a {
           display: block;
           margin: 10px 0;
-          padding: 10px 20px;
+          padding: 10px 15px;
           text-decoration: none;
           color: color(dark);
         }
@@ -112,6 +114,275 @@
           box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
             0px 2px 2px 0px rgba(0, 0, 0, 0.14),
             0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+        }
+
+        &.avatar-container {
+          position: relative;
+
+          .profile {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            @include phone;
+            @include medium_phone {
+              margin: 10px 0;
+            }
+          }
+
+          @include phone;
+          @include medium_phone {
+            display: block;
+          }
+
+          .profile-sub-menu {
+            display: none;
+            position: absolute;
+            top: 75px;
+            right: 0;
+            background-color: color(light);
+            width: 225px;
+            height: auto;
+            border: 1px solid color(accent);
+            border-radius: 3px;
+            box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.125),
+              -10px -10px 30px rgba(0, 0, 0, 0.125);
+
+            @include phone;
+            @include medium_phone {
+              position: relative;
+              top: 10px;
+              width: 100%;
+              border: none;
+              box-shadow: none;
+              margin-bottom: 20px;
+            }
+
+            &:before {
+              content: '';
+              position: absolute;
+              top: -20px;
+              right: 20px;
+              border: 10px solid;
+              border-color: transparent transparent color(light) transparent;
+
+              @include phone;
+              @include medium_phone {
+                border: 0;
+              }
+            }
+
+            ul {
+              display: block;
+
+              li {
+                border-bottom: 1px solid #f1f2f4;
+
+                &:last-child {
+                  border-bottom: 0;
+                }
+
+                a {
+                  margin: 0;
+                  padding: 15px 25px;
+                  font-size: 14px;
+                  color: #999;
+                  position: relative;
+
+                  @include phone;
+                  @include medium_phone {
+                    padding: 15px;
+                  }
+
+                  i {
+                    margin-right: 10px;
+                  }
+
+                  &:hover {
+                    background-color: #d1fffd;
+                    color: color(secondary);
+                    box-shadow: none;
+                  }
+                }
+              }
+            }
+          }
+
+          span {
+            margin-left: 5px;
+            color: #999;
+            font-size: 13px;
+            cursor: pointer;
+
+            i {
+              margin-left: 5px;
+            }
+            &:hover {
+              color: color(primary);
+            }
+          }
+
+          .avatar {
+            background-color: color(secondary);
+            width: 30px;
+            height: 30px;
+            font-size: 15px;
+          }
+
+          &.active {
+            .profile-sub-menu {
+              display: block;
+            }
+          }
+        }
+
+        &.notifications {
+          position: relative;
+          display: flex;
+          align-items: center;
+
+          @include phone;
+          @include medium_phone {
+            display: block;
+          }
+
+          i {
+            font-size: 25px;
+            color: #999;
+            margin: 0 20px;
+            cursor: pointer;
+
+            @include phone;
+            @include medium_phone {
+              margin: 20px 0;
+            }
+
+            &:hover {
+              color: color(primary);
+            }
+          }
+
+          .notifications-badge {
+            background-color: color(danger);
+            color: color(light);
+            height: 25px;
+            width: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            right: 3px;
+
+            @include phone;
+            @include medium_phone {
+              left: 15px;
+            }
+          }
+
+          .notifications-sub-menu {
+            display: none;
+            position: absolute;
+            top: 75px;
+            right: 0;
+            background-color: color(light);
+            width: 350px;
+            height: auto;
+            border: 1px solid color(accent);
+            border-radius: 3px;
+            box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.125),
+              -10px -10px 30px rgba(0, 0, 0, 0.125);
+
+            @include phone;
+            @include medium_phone {
+              position: relative;
+              top: 0;
+              width: 100%;
+              box-shadow: none;
+              border: 0;
+              margin-bottom: 20px;
+            }
+
+            &:before {
+              content: '';
+              position: absolute;
+              top: -20px;
+              right: 20px;
+              border: 10px solid;
+              border-color: transparent transparent color(light) transparent;
+
+              @include phone;
+              @include medium_phone {
+                border: none;
+              }
+            }
+
+            ul {
+              display: block;
+
+              li {
+                border-bottom: 1px solid #f1f2f4;
+                padding: 10px 20px;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+
+                @include phone;
+                @include medium_phone {
+                  padding: 10px;
+                }
+
+                .message {
+                  font-size: 14px;
+                  color: #999;
+                }
+
+                .icon {
+                  @include phone;
+                  @include medium_phone {
+                    width: 50px;
+                  }
+                }
+
+                &:last-child {
+                  border-bottom: 0;
+                }
+
+                &:hover {
+                  background-color: #d1fffd;
+                  transition: 0.4s;
+
+                  .message {
+                    color: color(secondary);
+                  }
+
+                  .icon {
+                    i {
+                      color: color(secondary);
+                    }
+                  }
+                }
+              }
+              .show-all {
+                padding: 10px;
+                display: flex;
+                justify-content: center;
+                color: color(primary);
+
+                &:hover {
+                  background-color: #ffe5f4;
+                  transition: 0.4s;
+                }
+              }
+            }
+          }
+
+          &.active {
+            .notifications-sub-menu {
+              display: block;
+            }
+          }
         }
       }
     }

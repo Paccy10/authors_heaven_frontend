@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import GoogleLogin from 'react-google-login';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Input from '../../components/UI/Input';
@@ -189,6 +189,7 @@ export class Signup extends Component {
   }
 
   render() {
+    const { loading, isAuthenticated } = this.props;
     const formElementsArray = [];
     for (const key in this.state.form) {
       formElementsArray.push({
@@ -210,7 +211,9 @@ export class Signup extends Component {
       />
     ));
 
-    const { loading } = this.props;
+    if (isAuthenticated) {
+      return <Redirect to="/" />;
+    }
 
     return (
       <div className="container">
@@ -297,12 +300,14 @@ export class Signup extends Component {
 Signup.propTypes = {
   onSetAlert: PropTypes.func,
   onSignup: PropTypes.func.isRequired,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
+  isAuthenticated: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
   loading: state.auth.loading,
-  status: state.auth.status
+  status: state.auth.status,
+  isAuthenticated: state.auth.token !== null
 });
 
 const mapDispatchToProps = dispatch => ({
