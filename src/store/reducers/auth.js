@@ -50,6 +50,11 @@ export default function (state = initialState, action) {
         loading: false
       });
 
+    case actionTypes.LOGOUT:
+      return updateObject(state, {
+        ...initialState
+      });
+
     default:
       return state;
   }

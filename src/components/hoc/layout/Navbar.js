@@ -182,7 +182,7 @@ class Navbar extends Component {
                         </Link>
                       </li>
                       <li>
-                        <Link to="/">
+                        <Link to="/auth/logout">
                           <i className="fa fa-sign-out-alt"></i> Logout
                         </Link>
                       </li>
