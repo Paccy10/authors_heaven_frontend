@@ -16,6 +16,7 @@ import Input from '../../components/UI/Input';
 import validate from '../../utils/validation';
 import Alert from '../../components/UI/Alert';
 import * as actions from '../../store/actions';
+import Aux from '../../components/hoc/Aux';
 
 export class Signup extends Component {
   state = {
@@ -115,7 +116,10 @@ export class Signup extends Component {
         touched: false
       }
     },
-    formIsValid: false
+    formIsValid: false,
+    localLoading: false,
+    googleLoading: false,
+    facebookLoading: false
   };
 
   UNSAFE_componentWillReceiveProps(nextprops) {
@@ -157,7 +161,7 @@ export class Signup extends Component {
     this.setState({ form: updatedForm, formIsValid });
   };
 
-  formSubmitHandler = () => {
+  formSubmitHandler = async () => {
     const { onSetAlert, onSignup } = this.props;
     if (!this.state.formIsValid) {
       onSetAlert('Please fill all the required fields.', 'error');
@@ -176,17 +180,27 @@ export class Signup extends Component {
     ) {
       onSetAlert('Passwords do not match.', 'error');
     } else {
-      onSignup(formData);
+      this.setState({ localLoading: true });
+      await onSignup(formData);
+      this.setState({ localLoading: false });
     }
   };
 
-  responseFacebook(response) {
-    console.log(response);
-  }
+  responseFacebook = async response => {
+    const { onLogin } = this.props;
+    const formData = { access_token: response.accessToken };
+    this.setState({ facebookLoading: true });
+    await onLogin(formData, 'facebook');
+    this.setState({ facebookLoading: false });
+  };
 
-  responseGoogle(response) {
-    console.log(response);
-  }
+  responseGoogle = async response => {
+    const { onLogin } = this.props;
+    const formData = { access_token: response.accessToken };
+    this.setState({ googleLoading: true });
+    await onLogin(formData, 'google');
+    this.setState({ googleLoading: false });
+  };
 
   render() {
     const { loading, isAuthenticated } = this.props;
@@ -211,7 +225,12 @@ export class Signup extends Component {
       />
     ));
 
-    if (isAuthenticated) {
+    if (
+      !this.state.localLoading &&
+      !this.state.facebookLoading &&
+      !this.state.googleLoading &&
+      isAuthenticated
+    ) {
       return <Redirect to="/" />;
     }
 
@@ -232,9 +251,9 @@ export class Signup extends Component {
                     color="primary"
                     fullWidth
                     onClick={this.formSubmitHandler}
-                    disabled={loading}
+                    disabled={loading && this.state.localLoading}
                   >
-                    {loading ? (
+                    {loading && this.state.localLoading ? (
                       <CircularProgress color="primary" size={23} />
                     ) : (
                       'Register'
@@ -244,7 +263,7 @@ export class Signup extends Component {
 
                 <div className="links">
                   <span>
-                    Already have an account? <Link to="/login">Login</Link>
+                    Already have an account? <Link to="/auth/login">Login</Link>
                   </span>
                 </div>
 
@@ -257,11 +276,17 @@ export class Signup extends Component {
                           <button
                             type="button"
                             onClick={renderProps.onClick}
-                            disabled={renderProps.disabled}
+                            disabled={loading && this.state.facebookLoading}
                             className="btn btn-facebook"
                           >
-                            <i className="fab fa-facebook"></i> Signup with
-                            Facebook
+                            {loading && this.state.facebookLoading ? (
+                              <CircularProgress color="primary" size={23} />
+                            ) : (
+                              <Aux>
+                                <i className="fab fa-facebook"></i> Signup with
+                                Facebook
+                              </Aux>
+                            )}
                           </button>
                         )}
                         fields="name,email,picture"
@@ -270,16 +295,22 @@ export class Signup extends Component {
                     </Grid>
                     <Grid item xs={12} xl={6}>
                       <GoogleLogin
-                        clientId="771354043241-ceu8ei0ttj7f4u0i06qp9o9cs5tnolbj.apps.googleusercontent.com"
+                        clientId="771354043241-b7q7splkpr9up77gqm941emlvqikm7kd.apps.googleusercontent.com"
                         render={renderProps => (
                           <button
                             type="button"
                             onClick={renderProps.onClick}
-                            disabled={renderProps.disabled}
+                            disabled={loading && this.state.googleLoading}
                             className="btn btn-google"
                           >
-                            <i className="fab fa-google-plus"></i> Signup with
-                            Google
+                            {loading && this.state.googleLoading ? (
+                              <CircularProgress color="primary" size={23} />
+                            ) : (
+                              <Aux>
+                                <i className="fab fa-google-plus"></i> Signup
+                                with Google
+                              </Aux>
+                            )}
                           </button>
                         )}
                         onSuccess={this.responseGoogle}
@@ -300,6 +331,7 @@ export class Signup extends Component {
 Signup.propTypes = {
   onSetAlert: PropTypes.func,
   onSignup: PropTypes.func.isRequired,
+  onLogin: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   isAuthenticated: PropTypes.bool
 };
@@ -313,7 +345,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onSetAlert: (message, alertType) =>
     dispatch(actions.setAlert(message, alertType)),
-  onSignup: formData => dispatch(actions.signup(formData))
+  onSignup: formData => dispatch(actions.signup(formData)),
+  onLogin: (FormData, type) => dispatch(actions.login(FormData, type))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Signup);

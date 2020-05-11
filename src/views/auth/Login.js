@@ -15,6 +15,7 @@ import Input from '../../components/UI/Input';
 import validate from '../../utils/validation';
 import Alert from '../../components/UI/Alert';
 import * as actions from '../../store/actions';
+import Aux from '../../components/hoc/Aux';
 
 export class Login extends Component {
   state = {
@@ -58,7 +59,10 @@ export class Login extends Component {
         helperText: ''
       }
     },
-    formIsValid: false
+    formIsValid: false,
+    localLoading: false,
+    googleLoading: false,
+    facebookLoading: false
   };
 
   inputChangeHandler = (event, inputName) => {
@@ -85,7 +89,7 @@ export class Login extends Component {
     this.setState({ form: updatedForm, formIsValid });
   };
 
-  formSubmitHandler = () => {
+  formSubmitHandler = async () => {
     const { onLogin, onSetAlert } = this.props;
     if (!this.state.formIsValid) {
       onSetAlert('Please fill all the required fields.', 'error');
@@ -95,16 +99,26 @@ export class Login extends Component {
       email: this.state.form.email.value,
       password: this.state.form.password.value
     };
-    onLogin(formData);
+    this.setState({ localLoading: true });
+    await onLogin(formData, 'local');
+    this.setState({ localLoading: false });
   };
 
-  responseFacebook(response) {
-    console.log(response);
-  }
+  responseFacebook = async response => {
+    const { onLogin } = this.props;
+    const formData = { access_token: response.accessToken };
+    this.setState({ facebookLoading: true });
+    await onLogin(formData, 'facebook');
+    this.setState({ facebookLoading: false });
+  };
 
-  responseGoogle(response) {
-    console.log(response);
-  }
+  responseGoogle = async response => {
+    const { onLogin } = this.props;
+    const formData = { access_token: response.accessToken };
+    this.setState({ googleLoading: true });
+    await onLogin(formData, 'google');
+    this.setState({ googleLoading: false });
+  };
 
   render() {
     const { loading, isAuthenticated } = this.props;
@@ -129,7 +143,12 @@ export class Login extends Component {
       />
     ));
 
-    if (isAuthenticated) {
+    if (
+      !this.state.localLoading &&
+      !this.state.facebookLoading &&
+      !this.state.googleLoading &&
+      isAuthenticated
+    ) {
       return <Redirect to="/" />;
     }
 
@@ -150,9 +169,9 @@ export class Login extends Component {
                     color="primary"
                     fullWidth
                     onClick={this.formSubmitHandler}
-                    disabled={loading}
+                    disabled={loading && this.state.localLoading}
                   >
-                    {loading ? (
+                    {loading && this.state.localLoading ? (
                       <CircularProgress color="primary" size={23} />
                     ) : (
                       'Login'
@@ -162,11 +181,11 @@ export class Login extends Component {
 
                 <div className="links">
                   <span>
-                    <Link to="/forgot-password">Forgot Password</Link>
+                    <Link to="/auth/forgot-password">Forgot Password</Link>
                   </span>
                   <span>
                     Don&apos;t have an account?{' '}
-                    <Link to="/signup">Register</Link>
+                    <Link to="/auth/signup">Register</Link>
                   </span>
                 </div>
 
@@ -179,11 +198,17 @@ export class Login extends Component {
                           <button
                             type="button"
                             onClick={renderProps.onClick}
-                            disabled={renderProps.disabled}
+                            disabled={loading && this.state.facebookLoading}
                             className="btn btn-facebook"
                           >
-                            <i className="fab fa-facebook"></i> Login with
-                            Facebook
+                            {loading && this.state.facebookLoading ? (
+                              <CircularProgress color="primary" size={23} />
+                            ) : (
+                              <Aux>
+                                <i className="fab fa-facebook"></i> Login with
+                                Facebook
+                              </Aux>
+                            )}
                           </button>
                         )}
                         fields="name,email,picture"
@@ -192,16 +217,22 @@ export class Login extends Component {
                     </Grid>
                     <Grid item xs={12} xl={6}>
                       <GoogleLogin
-                        clientId="771354043241-ceu8ei0ttj7f4u0i06qp9o9cs5tnolbj.apps.googleusercontent.com"
+                        clientId="771354043241-b7q7splkpr9up77gqm941emlvqikm7kd.apps.googleusercontent.com"
                         render={renderProps => (
                           <button
                             type="button"
                             onClick={renderProps.onClick}
-                            disabled={renderProps.disabled}
+                            disabled={loading && this.state.googleLoading}
                             className="btn btn-google"
                           >
-                            <i className="fab fa-google-plus"></i> Login with
-                            Google
+                            {loading && this.state.googleLoading ? (
+                              <CircularProgress color="primary" size={23} />
+                            ) : (
+                              <Aux>
+                                <i className="fab fa-google-plus"></i> Login
+                                with Google
+                              </Aux>
+                            )}
                           </button>
                         )}
                         onSuccess={this.responseGoogle}
@@ -235,7 +266,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onSetAlert: (message, alertType) =>
     dispatch(actions.setAlert(message, alertType)),
-  onLogin: FormData => dispatch(actions.login(FormData))
+  onLogin: (FormData, type) => dispatch(actions.login(FormData, type))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

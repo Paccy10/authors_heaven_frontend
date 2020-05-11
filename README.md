@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/Paccy10/authors_heaven_frontend.svg?branch=master)](https://travis-ci.org/Paccy10/authors_heaven_frontend) [![Test Coverage](https://api.codeclimate.com/v1/badges/b62a09627869ed4db6f4/test_coverage)](https://codeclimate.com/github/Paccy10/authors_heaven_frontend/test_coverage)
-
 # Authors Heaven Frontend
 
 ## Vision

@@ -124,12 +124,16 @@ export const checkAuthTimeout = expirationTime => {
   };
 };
 
-export const login = formData => {
+export const login = (formData, type) => {
   return dispatch => {
     dispatch(loginStart());
+    let url;
+    if (type === 'local') url = '/auth/login';
+    if (type === 'google') url = '/auth/login/google';
+    if (type === 'facebook') url = '/auth/login/facebook';
 
     return axios
-      .post('/auth/login', formData)
+      .post(url, formData)
       .then(response => {
         const expirationDate = new Date(new Date().getTime() + 86400 * 1000);
         localStorage.setItem('token', response.data.data.token);
