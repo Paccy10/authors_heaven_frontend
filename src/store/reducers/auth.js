@@ -16,6 +16,8 @@ export default function (state = initialState, action) {
     case actionTypes.SIGNUP_START:
     case actionTypes.ACTIVATE_START:
     case actionTypes.LOGIN_START:
+    case actionTypes.REQUEST_RESET_LINK_START:
+    case actionTypes.RESET_PASSWORD_START:
       return updateObject(state, {
         status: null,
         message: null,
@@ -26,6 +28,8 @@ export default function (state = initialState, action) {
 
     case actionTypes.SIGNUP_SUCCESS:
     case actionTypes.ACTIVATE_SUCCESS:
+    case actionTypes.REQUEST_RESET_LINK_SUCCESS:
+    case actionTypes.RESET_PASSWORD_SUCCESS:
       return updateObject(state, {
         status: payload.status,
         message: payload.message,
@@ -44,6 +48,8 @@ export default function (state = initialState, action) {
     case actionTypes.SIGNUP_FAIL:
     case actionTypes.ACTIVATE_FAIL:
     case actionTypes.LOGIN_FAIL:
+    case actionTypes.REQUEST_RESET_LINK_FAIL:
+    case actionTypes.RESET_PASSWORD_FAIL:
       return updateObject(state, {
         status: payload.status,
         errors: payload.errors,
