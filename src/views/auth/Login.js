@@ -121,7 +121,7 @@ export class Login extends Component {
   };
 
   render() {
-    const { loading, isAuthenticated } = this.props;
+    const { loading, isAuthenticated, history } = this.props;
     const formElementsArray = [];
     for (const key in this.state.form) {
       formElementsArray.push({
@@ -149,7 +149,13 @@ export class Login extends Component {
       !this.state.googleLoading &&
       isAuthenticated
     ) {
-      return <Redirect to="/" />;
+      return (
+        <Redirect
+          to={
+            history.location.state ? history.location.state.from.pathname : '/'
+          }
+        />
+      );
     }
 
     return (
@@ -254,12 +260,12 @@ Login.propTypes = {
   onSetAlert: PropTypes.func,
   onLogin: PropTypes.func.isRequired,
   loading: PropTypes.bool,
-  isAuthenticated: PropTypes.bool
+  isAuthenticated: PropTypes.bool,
+  history: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   loading: state.auth.loading,
-  authRedirectPath: state.auth.authRedirectPath,
   isAuthenticated: state.auth.token !== null
 });
 

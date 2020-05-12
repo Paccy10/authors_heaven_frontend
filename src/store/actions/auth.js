@@ -164,6 +164,7 @@ export const login = (formData, type) => {
 
 export const authCheckState = () => {
   return dispatch => {
+    dispatch(loginStart());
     const token = localStorage.getItem('token');
 
     if (!token) {

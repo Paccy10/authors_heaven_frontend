@@ -10,6 +10,7 @@ import {
 import { LockOpen } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 import welcomeImg from '../../assets/img/welcome.svg';
 import * as actions from '../../store/actions';
 
@@ -27,7 +28,11 @@ class UserActivation extends Component {
   };
 
   render() {
-    const { loading } = this.props;
+    const { loading, isAuthenticated } = this.props;
+
+    if (isAuthenticated) {
+      return <Redirect to="/" />;
+    }
     return (
       <div className="container">
         <Grid container justify="center">
@@ -75,12 +80,14 @@ UserActivation.propTypes = {
   match: PropTypes.object,
   status: PropTypes.string,
   history: PropTypes.object,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
+  isAuthenticated: PropTypes.bool
 };
 
 const mapSateToProps = state => ({
   loading: state.auth.loading,
-  status: state.auth.status
+  status: state.auth.status,
+  isAuthenticated: state.auth.token !== null
 });
 
 const mapDispatchToProps = dispatch => ({

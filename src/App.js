@@ -14,6 +14,9 @@ function App() {
       primary: {
         main: '#e03997'
       },
+      secondary: {
+        main: '#00b5ad'
+      },
       light: {
         main: '#fff'
       }

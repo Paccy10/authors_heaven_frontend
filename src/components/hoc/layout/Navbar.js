@@ -149,7 +149,7 @@ class Navbar extends Component {
                   })}
                 >
                   <div className="profile">
-                    <Avatar src="cdd" className="avatar" />
+                    <Avatar src={user.image} className="avatar" />
                     <span
                       id="username"
                       className={classNames({ username: true })}
@@ -170,7 +170,7 @@ class Navbar extends Component {
                         </Link>
                       </li>
                       <li>
-                        <Link to="/">
+                        <Link to="/profile">
                           {' '}
                           <i className="fa fa-user"></i> Profile
                         </Link>

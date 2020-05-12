@@ -1,0 +1,12 @@
+.tabLabelContainer {
+  span {
+    text-transform: none;
+
+    &:nth-child(2) {
+      margin-left: 5px;
+      background-color: color(light);
+      padding: 1px 5px;
+      border-radius: 50%;
+    }
+  }
+}
