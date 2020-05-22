@@ -45,6 +45,7 @@
     "react/no-access-state-in-setstate": 0,
     "jsx-a11y/label-has-associated-control": 0,
     "no-restricted-syntax": 0,
-    "guard-for-in": 0
+    "guard-for-in": 0,
+    "array-callback-return": 0
   }
 }

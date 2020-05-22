@@ -8,14 +8,25 @@ import {
   AppBar,
   Tabs,
   Tab,
-  Paper
+  Paper,
+  CircularProgress
 } from '@material-ui/core';
+import ReadMoreAndLess from 'react-read-more-less';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import TabPanel from '../../components/UI/TabPanel';
+import profileImg from '../../assets/img/man.png';
+import Article from '../../components/Article';
+import * as actions from '../../store/actions';
 
 class ViewProfile extends Component {
   state = {
     tabValue: 0
   };
+
+  componentDidMount() {
+    this.props.onFetchUserProfile();
+  }
 
   handleTabChange = (event, newValue) => {
     this.setState({ tabValue: newValue });
@@ -29,71 +40,120 @@ class ViewProfile extends Component {
   };
 
   render() {
+    const { loading, user } = this.props;
+
+    let profile = (
+      <div className="loader">
+        <CircularProgress color="primary" size={50} />
+      </div>
+    );
+
+    if (!loading) {
+      profile = (
+        <Grid container spacing={4}>
+          <Grid item xs={12} sm={3} xl={2}>
+            <div className="image-container">
+              <img src={user.image ? user.image : profileImg} alt="" />
+            </div>
+            <div className="details">
+              <p>
+                <i className="fas fa-user"></i>
+                <span>
+                  {user.firstname} {user.lastname}
+                </span>
+              </p>
+              <p>
+                <i className="fas fa-envelope"></i>
+                <span>{user.email}</span>
+              </p>
+              <div className="bio">
+                <h2>Bio</h2>
+                {user.bio ? (
+                  <ReadMoreAndLess
+                    className="read-more-content"
+                    charLimit={100}
+                    readMoreText="Show more"
+                    readLessText="Show less"
+                  >
+                    {user.bio}
+                  </ReadMoreAndLess>
+                ) : (
+                  <div className="no-bio">No bio added yet</div>
+                )}
+              </div>
+              <Button variant="contained" color="primary" fullWidth>
+                Edit Profile
+              </Button>
+            </div>
+          </Grid>
+          <Grid item xs={12} sm={9} xl={10}>
+            <AppBar position="static" color="default">
+              <Tabs
+                value={this.state.tabValue}
+                textColor="primary"
+                indicatorColor="primary"
+                onChange={this.handleTabChange}
+                scrollButtons="auto"
+                variant="scrollable"
+              >
+                <Tab
+                  label={
+                    <div className="tabLabelContainer">
+                      <span>Articles</span>
+                      <span>0</span>
+                    </div>
+                  }
+                  {...this.a11yProps(0)}
+                />
+                <Tab
+                  label={
+                    <div className="tabLabelContainer">
+                      <span>Followers</span>
+                      <span>0</span>
+                    </div>
+                  }
+                  {...this.a11yProps(1)}
+                />
+                <Tab
+                  label={
+                    <div className="tabLabelContainer">
+                      <span>Following</span>
+                      <span>0</span>
+                    </div>
+                  }
+                  {...this.a11yProps(2)}
+                />
+              </Tabs>
+            </AppBar>
+            <Paper>
+              <TabPanel value={this.state.tabValue} index={0}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <Article />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Article />
+                  </Grid>
+                </Grid>
+              </TabPanel>
+              <TabPanel value={this.state.tabValue} index={1}>
+                Item Two
+              </TabPanel>
+              <TabPanel value={this.state.tabValue} index={2}>
+                Item Three
+              </TabPanel>
+            </Paper>
+          </Grid>
+        </Grid>
+      );
+    }
+
     return (
       <div className="container">
         <Grid container justify="center">
           <Grid item xs={12}>
             <Card>
-              <CardContent>
-                <Grid container spacing={3}>
-                  <Grid item xs={3}>
-                    <p>
-                      Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                      Eligendi, aspernatur similique voluptate quod facere
-                      reprehenderit ex, quibusdam dicta odit, eos ut repudiandae
-                      vero mollitia ullam numquam animi tempora amet cumque.
-                    </p>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <AppBar position="static" color="default">
-                      <Tabs
-                        value={this.state.tabValue}
-                        textColor="secondary"
-                        onChange={this.handleTabChange}
-                      >
-                        <Tab
-                          label={
-                            <div className="tabLabelContainer">
-                              <span>Articles</span>
-                              <span>0</span>
-                            </div>
-                          }
-                          {...this.a11yProps(0)}
-                        />
-                        <Tab
-                          label={
-                            <div className="tabLabelContainer">
-                              <span>Followers</span>
-                              <span>0</span>
-                            </div>
-                          }
-                          {...this.a11yProps(1)}
-                        />
-                        <Tab
-                          label={
-                            <div className="tabLabelContainer">
-                              <span>Following</span>
-                              <span>0</span>
-                            </div>
-                          }
-                          {...this.a11yProps(2)}
-                        />
-                      </Tabs>
-                    </AppBar>
-                    <Paper>
-                      <TabPanel value={this.state.tabValue} index={0}>
-                        Item One
-                      </TabPanel>
-                      <TabPanel value={this.state.tabValue} index={1}>
-                        Item Two
-                      </TabPanel>
-                      <TabPanel value={this.state.tabValue} index={2}>
-                        Item Three
-                      </TabPanel>
-                    </Paper>
-                  </Grid>
-                </Grid>
-              </CardContent>
+              <CardContent className="profile-card">{profile}</CardContent>
             </Card>
           </Grid>
         </Grid>
@@ -102,4 +162,19 @@ class ViewProfile extends Component {
   }
 }
 
-export default ViewProfile;
+ViewProfile.propTypes = {
+  onFetchUserProfile: PropTypes.func,
+  loading: PropTypes.bool,
+  user: PropTypes.object
+};
+
+const mapStateToProps = state => ({
+  loading: state.profile.loading,
+  user: state.profile.user
+});
+
+const mapDispatchToProps = dispatch => ({
+  onFetchUserProfile: () => dispatch(actions.fetchUserProfile())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ViewProfile);

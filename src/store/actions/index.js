@@ -9,3 +9,4 @@ export {
   requestResetLink,
   resetPassword
 } from './auth';
+export { fetchUserProfile } from './profile';

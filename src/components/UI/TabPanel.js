@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography, Box } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
 class TabPanel extends Component {
@@ -15,7 +15,7 @@ class TabPanel extends Component {
       >
         {value === index && (
           <Box p={3}>
-            <Typography>{children}</Typography>
+            <div>{children}</div>
           </Box>
         )}
       </div>
