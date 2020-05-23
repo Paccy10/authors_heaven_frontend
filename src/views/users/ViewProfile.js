@@ -15,6 +15,7 @@ import ReadMoreAndLess from 'react-read-more-less';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import TabPanel from '../../components/UI/TabPanel';
+import Alert from '../../components/UI/Alert';
 import profileImg from '../../assets/img/man.png';
 import Article from '../../components/Article';
 import * as actions from '../../store/actions';
@@ -39,6 +40,10 @@ class ViewProfile extends Component {
     };
   };
 
+  onEditProfile = () => {
+    this.props.history.push('/profile/me/edit');
+  };
+
   render() {
     const { loading, user } = this.props;
 
@@ -53,7 +58,7 @@ class ViewProfile extends Component {
         <Grid container spacing={4}>
           <Grid item xs={12} sm={3} xl={2}>
             <div className="image-container">
-              <img src={user.image ? user.image : profileImg} alt="" />
+              <img src={user.image ? user.image.url : profileImg} alt="" />
             </div>
             <div className="details">
               <p>
@@ -81,7 +86,12 @@ class ViewProfile extends Component {
                   <div className="no-bio">No bio added yet</div>
                 )}
               </div>
-              <Button variant="contained" color="primary" fullWidth>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={this.onEditProfile}
+              >
                 Edit Profile
               </Button>
             </div>
@@ -153,7 +163,10 @@ class ViewProfile extends Component {
         <Grid container justify="center">
           <Grid item xs={12}>
             <Card>
-              <CardContent className="profile-card">{profile}</CardContent>
+              <CardContent className="profile-card">
+                <Alert />
+                {profile}
+              </CardContent>
             </Card>
           </Grid>
         </Grid>
@@ -165,7 +178,8 @@ class ViewProfile extends Component {
 ViewProfile.propTypes = {
   onFetchUserProfile: PropTypes.func,
   loading: PropTypes.bool,
-  user: PropTypes.object
+  user: PropTypes.object,
+  history: PropTypes.object
 };
 
 const mapStateToProps = state => ({

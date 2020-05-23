@@ -5,7 +5,7 @@ const initialState = {
   status: null,
   message: null,
   token: null,
-  user: null,
+  user: {},
   errors: null,
   loading: false
 };
@@ -22,7 +22,7 @@ export default function (state = initialState, action) {
         status: null,
         message: null,
         errors: null,
-        user: null,
+        user: {},
         loading: true
       });
 

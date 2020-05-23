@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Avatar, Badge } from '@material-ui/core';
 import classNames from 'classnames';
 import logo from '../../../assets/img/logo.png';
@@ -149,7 +148,10 @@ class Navbar extends Component {
                   })}
                 >
                   <div className="profile">
-                    <Avatar src={user.image} className="avatar" />
+                    <Avatar
+                      src={user.image ? user.image.url : ''}
+                      className="avatar"
+                    />
                     <span
                       id="username"
                       className={classNames({ username: true })}
@@ -170,7 +172,7 @@ class Navbar extends Component {
                         </Link>
                       </li>
                       <li>
-                        <Link to="/profile">
+                        <Link to="/profile/me">
                           {' '}
                           <i className="fa fa-user"></i> Profile
                         </Link>
@@ -204,9 +206,4 @@ Navbar.propTypes = {
   user: PropTypes.object
 };
 
-const mapStateToProps = state => ({
-  isAuthenticated: state.auth.token !== null,
-  user: state.auth.user
-});
-
-export default connect(mapStateToProps)(Navbar);
+export default Navbar;

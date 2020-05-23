@@ -9,6 +9,7 @@ import ForgotPassword from '../views/auth/ForgotPassword';
 import ResetPassword from '../views/auth/ResetPassword';
 import Logout from '../components/Logout';
 import ViewProfile from '../views/users/ViewProfile';
+import EditProfile from '../views/users/EditProfile';
 
 const Routes = () => {
   return (
@@ -20,7 +21,8 @@ const Routes = () => {
       <Route path="/auth/logout" component={Logout} />
       <Route path="/auth/forgot-password" component={ForgotPassword} />
       <Route path="/auth/reset-password/:token" component={ResetPassword} />
-      <PrivateRoute path="/profile" component={ViewProfile} />
+      <PrivateRoute exact path="/profile/me" component={ViewProfile} />
+      <PrivateRoute path="/profile/me/edit" component={EditProfile} />
     </Switch>
   );
 };

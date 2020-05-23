@@ -17,12 +17,14 @@ export default function (state = initialState, action) {
 
   switch (type) {
     case actionTypes.FETCH_USER_PROFILE_START:
+    case actionTypes.UPDATE_USER_PROFILE_START:
       return updateObject(state, {
         ...initialState,
         loading: true
       });
 
     case actionTypes.FETCH_USER_PROFILE_SUCCESS:
+    case actionTypes.UPDATE_USER_PROFILE_SUCCESS:
       return updateObject(state, {
         status: payload.status,
         message: payload.message,
@@ -31,6 +33,7 @@ export default function (state = initialState, action) {
       });
 
     case actionTypes.FETCH_USER_PROFILE_FAIL:
+    case actionTypes.UPDATE_USER_PROFILE_FAIL:
       return updateObject(state, {
         status: payload.status,
         errors: payload.errors,

@@ -22,10 +22,12 @@ export class CustomAlert extends Component {
     return (
       alert.message !== null &&
       alert.alertType !== null && (
-        <Alert severity={alert.alertType} onClose={this.onClose}>
-          <AlertTitle>{title}</AlertTitle>
-          {alert.message}
-        </Alert>
+        <div className="alert">
+          <Alert severity={alert.alertType} onClose={this.onClose}>
+            <AlertTitle>{title}</AlertTitle>
+            {alert.message}
+          </Alert>
+        </div>
       )
     );
   }

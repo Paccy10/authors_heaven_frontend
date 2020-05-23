@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -8,15 +9,17 @@ import Footer from './Footer';
 import * as actions from '../../../store/actions';
 
 class Layout extends Component {
-  async componentDidMount() {
-    await this.props.onTryAutoSignup();
+  componentDidMount() {
+    this.props.onTryAutoSignup();
   }
 
   render() {
+    const { isAuthenticated, user } = this.props;
+
     return (
       <Aux>
         <Header />
-        <Navbar />
+        <Navbar isAuthenticated={isAuthenticated} user={user} />
         <main className="main-content">{this.props.children}</main>
         <Footer />
       </Aux>
@@ -29,8 +32,13 @@ Layout.propTypes = {
   onTryAutoSignup: PropTypes.func
 };
 
+const mapStateToProps = state => ({
+  user: state.auth.user,
+  isAuthenticated: state.auth.token !== null
+});
+
 const mapDispatchToProps = dispatch => ({
   onTryAutoSignup: () => dispatch(actions.authCheckState())
 });
 
-export default connect(null, mapDispatchToProps)(Layout);
+export default connect(mapStateToProps, mapDispatchToProps)(Layout);
