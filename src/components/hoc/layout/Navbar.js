@@ -166,7 +166,7 @@ class Navbar extends Component {
                   <div className="profile-sub-menu">
                     <ul>
                       <li>
-                        <Link to="/">
+                        <Link to="/articles/new">
                           {' '}
                           <i className="fa fa-folder-plus"></i> New Article
                         </Link>

@@ -10,6 +10,7 @@ import ResetPassword from '../views/auth/ResetPassword';
 import Logout from '../components/Logout';
 import ViewProfile from '../views/users/ViewProfile';
 import EditProfile from '../views/users/EditProfile';
+import NewArticle from '../views/articles/NewArticle';
 
 const Routes = () => {
   return (
@@ -23,6 +24,7 @@ const Routes = () => {
       <Route path="/auth/reset-password/:token" component={ResetPassword} />
       <PrivateRoute exact path="/profile/me" component={ViewProfile} />
       <PrivateRoute path="/profile/me/edit" component={EditProfile} />
+      <PrivateRoute path="/articles/new" component={NewArticle} />
     </Switch>
   );
 };

@@ -1,0 +1,34 @@
+.new-article-card {
+  h2 {
+    color: color(textDark);
+    text-align: center;
+  }
+
+  form {
+    margin-top: 20px;
+
+    .input-field {
+      margin-bottom: 20px;
+    }
+
+    .react-file-reader-button {
+      button {
+        margin-bottom: 20px;
+      }
+    }
+
+    .image-container {
+      margin-bottom: 20px;
+      width: 100%;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .tox-tinymce {
+      margin-bottom: 20px;
+    }
+  }
+}

@@ -27,3 +27,6 @@ src/tests/**/__snapshots__
 
 # package-lock
 package-lock.json
+
+# .env
+.env

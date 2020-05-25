@@ -199,7 +199,7 @@ export class Login extends Component {
                   <Grid container spacing={2}>
                     <Grid item xs={12} xl={6}>
                       <FacebookLogin
-                        appId="249893146047297"
+                        appId={process.env.REACT_APP_FACEBOOK_APP_ID}
                         render={renderProps => (
                           <button
                             type="button"
@@ -223,7 +223,7 @@ export class Login extends Component {
                     </Grid>
                     <Grid item xs={12} xl={6}>
                       <GoogleLogin
-                        clientId="771354043241-b7q7splkpr9up77gqm941emlvqikm7kd.apps.googleusercontent.com"
+                        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                         render={renderProps => (
                           <button
                             type="button"

@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import axios from 'axios';
 import * as actionTypes from './types';
 import * as actions from '.';
