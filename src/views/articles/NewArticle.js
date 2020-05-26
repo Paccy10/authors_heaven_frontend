@@ -1,11 +1,22 @@
+/* eslint-disable no-param-reassign */
 import React, { Component } from 'react';
-import { Grid, Card, CardContent, Button } from '@material-ui/core';
+import {
+  Grid,
+  Card,
+  CardContent,
+  Button,
+  CircularProgress
+} from '@material-ui/core';
 import ReactFileReader from 'react-file-reader';
 import { Editor } from '@tinymce/tinymce-react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import Alert from '../../components/UI/Alert';
 import Input from '../../components/UI/Input';
+import Tags from '../../components/Tags';
 import validate from '../../utils/validation';
 import { tinymce_variables } from '../../utils/constants';
+import * as actions from '../../store/actions';
 
 class NewArticle extends Component {
   state = {
@@ -31,8 +42,15 @@ class NewArticle extends Component {
     },
     body: '',
     fileImg: '',
-    image: ''
+    image: '',
+    tags: []
   };
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.message === 'Article successfully created') {
+      this.props.history.push('/');
+    }
+  }
 
   inputChangeHandler = (event, inputName) => {
     const updatedForm = {
@@ -63,6 +81,37 @@ class NewArticle extends Component {
     this.setState({ image: files || '', fileImg: data });
   };
 
+  addTag = event => {
+    const tags = [...this.state.tags];
+    const tag = event.target.value;
+    if (event.key === 'Enter' && tag !== '' && !tags.includes(tag)) {
+      this.setState({ tags: [...tags, tag] });
+      event.target.value = '';
+    }
+  };
+
+  removeTag = indexToRemove => {
+    this.setState({
+      tags: this.state.tags.filter((_, index) => index !== indexToRemove)
+    });
+  };
+
+  formSubmitHandler = async () => {
+    const { onCreateArticle, onSetAlert } = this.props;
+    const { form, body, fileImg, tags } = this.state;
+    if (form.title.value === '' || body === '') {
+      onSetAlert('Please fill all the required fields.', 'error');
+      return;
+    }
+    const formData = {
+      title: form.title.value,
+      body,
+      image: fileImg,
+      tags: tags.toString()
+    };
+    onCreateArticle(formData);
+  };
+
   render() {
     const formElementsArray = [];
     for (const key in this.state.form) {
@@ -84,6 +133,8 @@ class NewArticle extends Component {
         helperText={formElement.config.helperText}
       />
     ));
+
+    const { loading } = this.props;
 
     return (
       <div className="container">
@@ -116,15 +167,24 @@ class NewArticle extends Component {
                     onEditorChange={this.handleEditorChange}
                     value={this.state.body}
                   />
+                  <Tags
+                    tags={this.state.tags}
+                    addTag={this.addTag}
+                    removeTag={this.removeTag}
+                  />
                   <Button
                     variant="contained"
                     color="primary"
                     className="form-btn"
                     fullWidth
-                    // onClick={this.formSubmitHandler}
-                    // disabled={loading}
+                    onClick={this.formSubmitHandler}
+                    disabled={loading}
                   >
-                    Create Article
+                    {loading ? (
+                      <CircularProgress color="primary" size={23} />
+                    ) : (
+                      'Create Article'
+                    )}
                   </Button>
                 </form>
               </CardContent>
@@ -136,4 +196,23 @@ class NewArticle extends Component {
   }
 }
 
-export default NewArticle;
+NewArticle.propTypes = {
+  onCreateArticle: PropTypes.func,
+  onSetAlert: PropTypes.func,
+  loading: PropTypes.bool,
+  history: PropTypes.object,
+  message: PropTypes.string
+};
+
+const mapStateToProps = state => ({
+  loading: state.article.loading,
+  message: state.article.message
+});
+
+const mapDispatchToProps = dispatch => ({
+  onSetAlert: (message, alertType) =>
+    dispatch(actions.setAlert(message, alertType)),
+  onCreateArticle: articleData => dispatch(actions.createArticle(articleData))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewArticle);

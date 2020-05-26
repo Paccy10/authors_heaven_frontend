@@ -10,3 +10,4 @@ export {
   resetPassword
 } from './auth';
 export { fetchUserProfile, updateUserProfile } from './profile';
+export { createArticle } from './article';
