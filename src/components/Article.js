@@ -9,14 +9,6 @@ import {
 } from '@material-ui/core';
 
 class Article extends Component {
-  state = {
-    expanded: false
-  };
-
-  handleExpandClick = () => {
-    this.setState({ expanded: !this.state.expanded });
-  };
-
   render() {
     return (
       <Card className="article-card">

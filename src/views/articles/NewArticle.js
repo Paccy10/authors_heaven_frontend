@@ -48,7 +48,7 @@ class NewArticle extends Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.message === 'Article successfully created') {
-      this.props.history.push('/');
+      this.props.history.push(`/articles/${nextProps.article.slug}`);
     }
   }
 
@@ -201,12 +201,14 @@ NewArticle.propTypes = {
   onSetAlert: PropTypes.func,
   loading: PropTypes.bool,
   history: PropTypes.object,
-  message: PropTypes.string
+  message: PropTypes.string,
+  article: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   loading: state.article.loading,
-  message: state.article.message
+  message: state.article.message,
+  article: state.article.articles[0]
 });
 
 const mapDispatchToProps = dispatch => ({

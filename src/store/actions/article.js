@@ -65,3 +65,99 @@ export const createArticle = articleData => {
       });
   };
 };
+
+export const fetchArticlesStart = () => ({
+  type: actionTypes.FETCH_ARTICLES_START
+});
+
+export const fetchArticlesSuccess = (status, message, articles) => ({
+  type: actionTypes.FETCH_ARTICLES_SUCCESS,
+  payload: {
+    status,
+    message,
+    articles
+  }
+});
+
+export const fetchArticlesFail = (status, errors) => ({
+  type: actionTypes.FETCH_ARTICLES_FAIL,
+  payload: {
+    status,
+    errors
+  }
+});
+
+export const fetchArticles = () => {
+  return dispatch => {
+    dispatch(fetchArticlesStart());
+    return axios
+      .get('/articles')
+      .then(response => {
+        dispatch(
+          fetchArticlesSuccess(
+            response.data.status,
+            response.data.message,
+            response.data.data.articles
+          )
+        );
+      })
+      .catch(error => {
+        if (error.response) {
+          dispatch(
+            fetchArticlesFail(
+              error.response.data.status,
+              error.response.data.errors
+            )
+          );
+        }
+      });
+  };
+};
+
+export const fetchArticleStart = () => ({
+  type: actionTypes.FETCH_ARTICLE_START
+});
+
+export const fetchArticleSuccess = (status, message, article) => ({
+  type: actionTypes.FETCH_ARTICLE_SUCCESS,
+  payload: {
+    status,
+    message,
+    article
+  }
+});
+
+export const fetchArticleFail = (status, errors) => ({
+  type: actionTypes.FETCH_ARTICLES_FAIL,
+  payload: {
+    status,
+    errors
+  }
+});
+
+export const fetchArticle = articleSlug => {
+  return dispatch => {
+    dispatch(fetchArticleStart());
+    return axios
+      .get(`/articles/${articleSlug}`)
+      .then(response => {
+        dispatch(
+          fetchArticleSuccess(
+            response.data.status,
+            response.data.message,
+            response.data.data.article
+          )
+        );
+      })
+      .catch(error => {
+        if (error.response) {
+          dispatch(
+            fetchArticleFail(
+              error.response.data.status,
+              error.response.data.errors
+            )
+          );
+        }
+      });
+  };
+};
