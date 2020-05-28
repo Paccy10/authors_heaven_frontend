@@ -11,3 +11,4 @@ export {
 } from './auth';
 export { fetchUserProfile, updateUserProfile } from './profile';
 export { createArticle, fetchArticles, fetchArticle } from './article';
+export { likeArticle, dislikeArticle } from './vote';

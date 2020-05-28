@@ -203,4 +203,48 @@
       margin: 20px 0;
     }
   }
+  .actions {
+    margin: 50px 0;
+    display: flex;
+    flex-wrap: wrap;
+    color: color(textDark);
+
+    .ratings {
+      flex: 1;
+    }
+
+    .votes {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      span {
+        margin: 0 10px;
+        font-size: 15px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+
+        &.voted {
+          color: color(primary);
+        }
+
+        i {
+          cursor: pointer;
+        }
+      }
+    }
+
+    .report {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+
+      span {
+        font-size: 20px;
+      }
+    }
+  }
 }

@@ -137,6 +137,7 @@ export const fetchArticleFail = (status, errors) => ({
 
 export const fetchArticle = articleSlug => {
   return dispatch => {
+    setAuthToken();
     dispatch(fetchArticleStart());
     return axios
       .get(`/articles/${articleSlug}`)

@@ -5,8 +5,9 @@ import auth from './reducers/auth';
 import alert from './reducers/alert';
 import profile from './reducers/profile';
 import article from './reducers/article';
+import vote from './reducers/vote';
 
-const rootReducer = combineReducers({ auth, alert, profile, article });
+const rootReducer = combineReducers({ auth, alert, profile, article, vote });
 
 const store = createStore(
   rootReducer,
