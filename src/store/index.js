@@ -6,8 +6,16 @@ import alert from './reducers/alert';
 import profile from './reducers/profile';
 import article from './reducers/article';
 import vote from './reducers/vote';
+import bookmark from './reducers/bookmark';
 
-const rootReducer = combineReducers({ auth, alert, profile, article, vote });
+const rootReducer = combineReducers({
+  auth,
+  alert,
+  profile,
+  article,
+  vote,
+  bookmark
+});
 
 const store = createStore(
   rootReducer,

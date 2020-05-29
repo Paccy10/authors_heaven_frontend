@@ -210,14 +210,24 @@
     color: color(textDark);
 
     .ratings {
-      flex: 1;
+      flex: 3;
+
+      @include tablet {
+        flex: 100%;
+      }
     }
 
     .votes {
-      flex: 1;
+      flex: 3;
       display: flex;
       justify-content: center;
       align-items: center;
+
+      @include tablet {
+        flex: 60%;
+        justify-content: flex-start;
+        margin-top: 10px;
+      }
 
       span {
         margin: 0 10px;
@@ -225,6 +235,11 @@
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
+
+        @include tablet {
+          padding: 6px;
+          margin: 0 5px;
+        }
 
         &.voted {
           color: color(primary);
@@ -241,6 +256,11 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
+
+      @include tablet {
+        flex: 40%;
+        margin-top: 10px;
+      }
 
       span {
         font-size: 20px;
