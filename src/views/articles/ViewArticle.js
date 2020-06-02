@@ -9,7 +9,7 @@ import htmlParser from 'html-react-parser';
 import { Redirect } from 'react-router-dom';
 import * as actions from '../../store/actions';
 import Aux from '../../components/hoc/Aux';
-import Alert from '../../components/UI/Alert';
+import Comments from '../../components/Comments';
 
 class ViewArticle extends Component {
   state = {
@@ -130,7 +130,6 @@ class ViewArticle extends Component {
         <Grid container justify="center">
           <Grid item xs={12} sm={8} xl={6}>
             <Paper className="article-container">
-              <Alert />
               {loading ? (
                 <div className="loader">
                   <CircularProgress color="primary" size={50} />
@@ -147,11 +146,11 @@ class ViewArticle extends Component {
                       <span>
                         {author.firstname} {author.lastname}
                       </span>
-                      <span>{moment(article.createdAt).fromNow()}</span>
+                      <span>
+                        {moment(article.createdAt).fromNow()} -{' '}
+                        {article.readingTime} read
+                      </span>
                     </div>
-                  </div>
-                  <div className="reading-time">
-                    Read Time: {article.readingTime}
                   </div>
                   {article.image ? (
                     <div className="image-container">
@@ -205,6 +204,7 @@ class ViewArticle extends Component {
                       </span>
                     </div>
                   </div>
+                  <Comments articleId={article.id} />
                 </Aux>
               )}
             </Paper>

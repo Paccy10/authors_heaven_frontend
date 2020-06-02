@@ -101,6 +101,7 @@
   .avatar-container {
     display: flex;
     align-items: center;
+    margin-bottom: 20px;
     .avatar {
       height: 50px;
       width: 50px;
@@ -132,17 +133,6 @@
           font-style: italic;
         }
       }
-    }
-  }
-  .reading-time {
-    margin: 20px 0;
-    background-color: #efefef;
-    color: #555;
-    padding: 5px;
-    display: inline-block;
-
-    @include medium_phone {
-      font-size: 13px;
     }
   }
   .image-container {
@@ -204,7 +194,7 @@
     }
   }
   .actions {
-    margin: 50px 0;
+    margin: 50px 0 30px 0;
     display: flex;
     flex-wrap: wrap;
     color: color(textDark);
