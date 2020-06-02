@@ -204,7 +204,7 @@ class ViewArticle extends Component {
                       </span>
                     </div>
                   </div>
-                  <Comments articleId={article.id} />
+                  <Comments articleId={article.id} location={location} />
                 </Aux>
               )}
             </Paper>

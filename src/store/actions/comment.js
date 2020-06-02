@@ -79,6 +79,7 @@ export const fetchArticleCommentsFail = (status, errors) => ({
 
 export const fetchArticleComments = articleId => {
   return dispatch => {
+    setAuthToken();
     dispatch(fetchArticleCommentsStart());
     return axios
       .get(`/articles/${articleId}/comments`)

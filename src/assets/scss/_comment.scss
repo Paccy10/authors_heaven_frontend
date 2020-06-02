@@ -72,6 +72,13 @@
             &:nth-child(1) {
               margin-right: 30px;
             }
+            &.voted {
+              color: color(primary);
+            }
+
+            i {
+              cursor: pointer;
+            }
           }
         }
       }

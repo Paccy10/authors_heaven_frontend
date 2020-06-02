@@ -4,6 +4,7 @@ import { CircularProgress, Avatar } from '@material-ui/core';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { Redirect } from 'react-router-dom';
 import Alert from './UI/Alert';
 import Input from './UI/Input';
 import Button from './UI/Button';
@@ -38,7 +39,8 @@ class Comments extends Component {
     formIsValid: false,
     comments: [],
     loadComments: false,
-    loading: false
+    loading: false,
+    isGuest: false
   };
 
   componentDidMount() {
@@ -114,6 +116,50 @@ class Comments extends Component {
     });
   };
 
+  likeComment = index => {
+    const comments = [...this.state.comments];
+    const comment = comments[index];
+    const { isAuthenticated, onLikeComment } = this.props;
+    if (isAuthenticated) {
+      onLikeComment(comment.id).then(() => {
+        const { voteMessage } = this.props;
+        if (voteMessage === 'Comment successfully liked') {
+          const { votes } = comment;
+          votes.dislikes = votes.hasDisliked
+            ? votes.dislikes - 1
+            : votes.dislikes;
+          votes.likes += 1;
+          votes.hasLiked = true;
+          votes.hasDisliked = false;
+          this.setState({ comments });
+        }
+      });
+    } else {
+      this.setState({ isGuest: true });
+    }
+  };
+
+  dislikeComment = index => {
+    const comments = [...this.state.comments];
+    const comment = comments[index];
+    const { isAuthenticated, onDislikeComment } = this.props;
+    if (isAuthenticated) {
+      onDislikeComment(comment.id).then(() => {
+        const { voteMessage } = this.props;
+        if (voteMessage === 'Comment successfully disliked') {
+          const { votes } = comment;
+          votes.likes = votes.hasLiked ? votes.likes - 1 : votes.likes;
+          votes.dislikes += 1;
+          votes.hasLiked = false;
+          votes.hasDisliked = true;
+          this.setState({ comments });
+        }
+      });
+    } else {
+      this.setState({ isGuest: true });
+    }
+  };
+
   render() {
     const formElementsArray = [];
     for (const key in this.state.form) {
@@ -136,8 +182,14 @@ class Comments extends Component {
       />
     ));
 
-    const { isAuthenticated, user, loading } = this.props;
-    const { loadComments, comments } = this.state;
+    const { isAuthenticated, user, loading, location } = this.props;
+    const { loadComments, comments, isGuest } = this.state;
+
+    if (isGuest) {
+      return (
+        <Redirect to={{ pathname: '/auth/login', state: { from: location } }} />
+      );
+    }
 
     return (
       <div className="comments-container">
@@ -187,11 +239,20 @@ class Comments extends Component {
                     </div>
                     <div className="body">{comment.body}</div>
                     <div className="comment-actions">
-                      <span>
-                        <i className="fas fa-heart"></i> {comment.votes.likes}
+                      <span className={comment.votes.hasLiked ? 'voted' : null}>
+                        <i
+                          className="fas fa-heart"
+                          onClick={() => this.likeComment(index)}
+                        ></i>{' '}
+                        {comment.votes.likes}
                       </span>
-                      <span>
-                        <i className="fas fa-heart-broken"></i>{' '}
+                      <span
+                        className={comment.votes.hasDisliked ? 'voted' : null}
+                      >
+                        <i
+                          className="fas fa-heart-broken"
+                          onClick={() => this.dislikeComment(index)}
+                        ></i>{' '}
                         {comment.votes.dislikes}
                       </span>
                     </div>
@@ -213,9 +274,13 @@ Comments.propTypes = {
   loading: PropTypes.bool,
   message: PropTypes.string,
   comments: PropTypes.array,
+  voteMessage: PropTypes.string,
+  location: PropTypes.object,
   onSetAlert: PropTypes.func,
   onCommentArticle: PropTypes.func,
-  onFetchArticleComments: PropTypes.func
+  onFetchArticleComments: PropTypes.func,
+  onLikeComment: PropTypes.func,
+  onDislikeComment: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -223,7 +288,8 @@ const mapStateToProps = state => ({
   comments: state.comment.comments,
   message: state.comment.message,
   isAuthenticated: state.auth.token !== null,
-  user: state.auth.user
+  user: state.auth.user,
+  voteMessage: state.vote.message
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -232,7 +298,9 @@ const mapDispatchToProps = dispatch => ({
   onCommentArticle: (articleId, formData) =>
     dispatch(actions.commentArticle(articleId, formData)),
   onFetchArticleComments: articleId =>
-    dispatch(actions.fetchArticleComments(articleId))
+    dispatch(actions.fetchArticleComments(articleId)),
+  onLikeComment: commentId => dispatch(actions.likeComment(commentId)),
+  onDislikeComment: commentId => dispatch(actions.dislikeComment(commentId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Comments);
