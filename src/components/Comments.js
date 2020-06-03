@@ -40,21 +40,30 @@ class Comments extends Component {
     comments: [],
     loadComments: false,
     loading: false,
-    isGuest: false
+    isGuest: false,
+    isMounted: false
   };
 
   componentDidMount() {
+    this.setState({ isMounted: true });
     const { onFetchArticleComments, articleId } = this.props;
     if (articleId) {
       this.setState({ loadComments: true });
       onFetchArticleComments(articleId).then(() => {
         const { message, comments } = this.props;
-        if (message === 'Comments successfully fetched') {
+        if (
+          this.state.isMounted &&
+          message === 'Comments successfully fetched'
+        ) {
           this.setState({ comments, loadComments: false });
         }
       });
     }
   }
+
+  // componentWillUnmount() {
+  //   this.setState({ isMounted: false });
+  // }
 
   UNSAFE_componentWillReceiveProps(nextprops) {
     if (nextprops.message === 'Comment successfully created') {

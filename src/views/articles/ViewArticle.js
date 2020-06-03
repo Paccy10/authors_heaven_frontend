@@ -2,6 +2,7 @@
 /* eslint-disable react/jsx-indent */
 import React, { Component } from 'react';
 import { Grid, Avatar, Paper, CircularProgress } from '@material-ui/core';
+import { Rating } from '@material-ui/lab';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -18,13 +19,23 @@ class ViewArticle extends Component {
     likes: 0,
     dislikes: 0,
     hasBookmarked: false,
-    isGuest: false
+    isGuest: false,
+    rating: 0,
+    loading: false
   };
 
   componentDidMount() {
-    const { onFetchArticle, match } = this.props;
+    const { onFetchArticle, match, onFetchArticleRatings } = this.props;
     onFetchArticle(match.params.articleSlug).then(() => {
-      const { votes, hasBookmarked } = this.props.article;
+      const { votes, hasBookmarked, id } = this.props.article;
+      onFetchArticleRatings(id).then(() => {
+        const { ratings, user } = this.props;
+        for (const rating of ratings) {
+          if (rating.userId === user.id) {
+            this.setState({ rating: rating.rating });
+          }
+        }
+      });
       this.setState({
         hasLiked: votes.hasLiked,
         hasDisliked: votes.hasDisliked,
@@ -107,6 +118,25 @@ class ViewArticle extends Component {
     }
   };
 
+  onRatingChange = (event, value) => {
+    const { article, onRateArticle, isAuthenticated } = this.props;
+    if (isAuthenticated) {
+      this.setState({ loading: true });
+      const formData = { rating: value };
+      onRateArticle(article.id, formData).then(() => {
+        const { ratingMessage } = this.props;
+        if (
+          ratingMessage === 'Rating successfully updated' ||
+          ratingMessage === 'Rating successfully created'
+        ) {
+          this.setState({ rating: value, loading: false });
+        }
+      });
+    } else {
+      this.setState({ isGuest: true });
+    }
+  };
+
   render() {
     const { loading, article, location } = this.props;
     const author = article.author || {};
@@ -116,7 +146,8 @@ class ViewArticle extends Component {
       hasLiked,
       hasDisliked,
       hasBookmarked,
-      isGuest
+      isGuest,
+      rating
     } = this.state;
 
     if (isGuest) {
@@ -171,7 +202,16 @@ class ViewArticle extends Component {
                     {article.body ? htmlParser(article.body) : null}
                   </div>
                   <div className="actions">
-                    <div className="ratings"></div>
+                    <div className="ratings">
+                      <Rating
+                        name="article-rating"
+                        value={rating}
+                        size="medium"
+                        onChange={this.onRatingChange}
+                        className="rating"
+                      />{' '}
+                      {this.state.loading ? 'Please wait...' : ''}
+                    </div>
                     <div className="votes">
                       <span className={hasLiked ? 'voted' : null}>
                         <i
@@ -227,15 +267,23 @@ ViewArticle.propTypes = {
   voteMessage: PropTypes.string,
   bookmarkMessage: PropTypes.string,
   isAuthenticated: PropTypes.bool,
-  location: PropTypes.object
+  location: PropTypes.object,
+  onFetchArticleRatings: PropTypes.func,
+  user: PropTypes.object,
+  ratings: PropTypes.array,
+  onRateArticle: PropTypes.func,
+  ratingMessage: PropTypes.string
 };
 
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.token !== null,
+  user: state.auth.user,
   loading: state.article.loading,
   article: state.article.articles[0] || {},
   voteMessage: state.vote.message,
-  bookmarkMessage: state.bookmark.message
+  bookmarkMessage: state.bookmark.message,
+  ratingMessage: state.rating.message,
+  ratings: state.rating.ratings
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -244,7 +292,11 @@ const mapDispatchToProps = dispatch => ({
   onDislikeArticle: articleId => dispatch(actions.dislikeArticle(articleId)),
   onBookmarkArticle: articleId => dispatch(actions.bookmarkArticle(articleId)),
   onUnbookmarkArticle: articleId =>
-    dispatch(actions.unbookmarkArticle(articleId))
+    dispatch(actions.unbookmarkArticle(articleId)),
+  onFetchArticleRatings: articleId =>
+    dispatch(actions.fetchArticleRatings(articleId)),
+  onRateArticle: (articleId, formData) =>
+    dispatch(actions.rateArticle(articleId, formData))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewArticle);

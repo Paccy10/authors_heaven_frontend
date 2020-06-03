@@ -201,6 +201,12 @@
 
     .ratings {
       flex: 3;
+      display: flex;
+      align-items: center;
+
+      .rating {
+        margin-right: 10px;
+      }
 
       @include tablet {
         flex: 100%;

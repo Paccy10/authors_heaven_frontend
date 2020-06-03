@@ -19,3 +19,4 @@ export {
 } from './vote';
 export { bookmarkArticle, unbookmarkArticle } from './bookmark';
 export { commentArticle, fetchArticleComments } from './comment';
+export { fetchArticleRatings, rateArticle } from './rating';

@@ -8,6 +8,7 @@ import article from './reducers/article';
 import vote from './reducers/vote';
 import bookmark from './reducers/bookmark';
 import comment from './reducers/comment';
+import rating from './reducers/rating';
 
 const rootReducer = combineReducers({
   auth,
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
   article,
   vote,
   bookmark,
-  comment
+  comment,
+  rating
 });
 
 const store = createStore(
