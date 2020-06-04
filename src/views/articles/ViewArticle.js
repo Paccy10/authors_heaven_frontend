@@ -9,8 +9,11 @@ import moment from 'moment';
 import htmlParser from 'html-react-parser';
 import { Redirect } from 'react-router-dom';
 import * as actions from '../../store/actions';
+import Alert from '../../components/UI/Alert';
 import Aux from '../../components/hoc/Aux';
 import Comments from '../../components/Comments';
+import Modal from '../../components/UI/Modal';
+import Button from '../../components/UI/Button';
 
 class ViewArticle extends Component {
   state = {
@@ -21,7 +24,8 @@ class ViewArticle extends Component {
     hasBookmarked: false,
     isGuest: false,
     rating: 0,
-    loading: false
+    loading: false,
+    openDeleteModel: false
   };
 
   componentDidMount() {
@@ -44,6 +48,12 @@ class ViewArticle extends Component {
         hasBookmarked
       });
     });
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.message === 'Article successfully deleted') {
+      this.props.history.push('/');
+    }
   }
 
   likeArticle = () => {
@@ -137,8 +147,22 @@ class ViewArticle extends Component {
     }
   };
 
+  onOpenDeleteModal = () => {
+    this.setState({ openDeleteModel: true });
+  };
+
+  onCloseDeleteModal = () => {
+    this.setState({ openDeleteModel: false });
+  };
+
+  onDelete = () => {
+    this.setState({ openDeleteModel: false });
+    const { onDeleteArticle, article } = this.props;
+    onDeleteArticle(article.id);
+  };
+
   render() {
-    const { loading, article, location } = this.props;
+    const { loading, article, location, isAuthenticated, user } = this.props;
     const author = article.author || {};
     const {
       likes,
@@ -147,7 +171,8 @@ class ViewArticle extends Component {
       hasDisliked,
       hasBookmarked,
       isGuest,
-      rating
+      rating,
+      openDeleteModel
     } = this.state;
 
     if (isGuest) {
@@ -158,9 +183,20 @@ class ViewArticle extends Component {
 
     return (
       <div className="container">
+        {isAuthenticated && user.id === article.authorId ? (
+          <div className="article-actions">
+            <span>
+              <i className="fas fa-edit"></i>
+            </span>
+            <span onClick={this.onOpenDeleteModal}>
+              <i className="fas fa-trash-alt"></i>
+            </span>
+          </div>
+        ) : null}
         <Grid container justify="center">
           <Grid item xs={12} sm={8} xl={6}>
             <Paper className="article-container">
+              <Alert />
               {loading ? (
                 <div className="loader">
                   <CircularProgress color="primary" size={50} />
@@ -248,6 +284,25 @@ class ViewArticle extends Component {
                 </Aux>
               )}
             </Paper>
+            <Modal open={openDeleteModel} onClose={this.onCloseDeleteModal}>
+              <div className="title">
+                <h3>Delete Article</h3>
+              </div>
+              <div className="body">
+                Are you sure you want to delete this article?
+              </div>
+              <div className="actions">
+                <Button
+                  className="btn btn-light-gray"
+                  onClick={this.onCloseDeleteModal}
+                >
+                  Cancel
+                </Button>
+                <Button className="btn btn-danger" onClick={this.onDelete}>
+                  Delete
+                </Button>
+              </div>
+            </Modal>
           </Grid>
         </Grid>
       </div>
@@ -272,7 +327,10 @@ ViewArticle.propTypes = {
   user: PropTypes.object,
   ratings: PropTypes.array,
   onRateArticle: PropTypes.func,
-  ratingMessage: PropTypes.string
+  ratingMessage: PropTypes.string,
+  onDeleteArticle: PropTypes.func,
+  message: PropTypes.string,
+  history: PropTypes.object
 };
 
 const mapStateToProps = state => ({
@@ -283,6 +341,7 @@ const mapStateToProps = state => ({
   voteMessage: state.vote.message,
   bookmarkMessage: state.bookmark.message,
   ratingMessage: state.rating.message,
+  message: state.article.message,
   ratings: state.rating.ratings
 });
 
@@ -296,7 +355,8 @@ const mapDispatchToProps = dispatch => ({
   onFetchArticleRatings: articleId =>
     dispatch(actions.fetchArticleRatings(articleId)),
   onRateArticle: (articleId, formData) =>
-    dispatch(actions.rateArticle(articleId, formData))
+    dispatch(actions.rateArticle(articleId, formData)),
+  onDeleteArticle: articleId => dispatch(actions.deleteArticle(articleId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewArticle);

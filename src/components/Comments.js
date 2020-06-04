@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
-import Alert from './UI/Alert';
 import Input from './UI/Input';
 import Button from './UI/Button';
 import Aux from './hoc/Aux';
@@ -61,10 +60,6 @@ class Comments extends Component {
     }
   }
 
-  // componentWillUnmount() {
-  //   this.setState({ isMounted: false });
-  // }
-
   UNSAFE_componentWillReceiveProps(nextprops) {
     if (nextprops.message === 'Comment successfully created') {
       const updatedForm = {
@@ -106,11 +101,7 @@ class Comments extends Component {
 
   formSubmitHandler = async event => {
     event.preventDefault();
-    const { onCommentArticle, onSetAlert, articleId } = this.props;
-    if (!this.state.formIsValid) {
-      onSetAlert('Please add your comment', 'error');
-      return;
-    }
+    const { onCommentArticle, articleId } = this.props;
     const formData = {
       body: this.state.form.body.value
     };
@@ -192,7 +183,7 @@ class Comments extends Component {
     ));
 
     const { isAuthenticated, user, loading, location } = this.props;
-    const { loadComments, comments, isGuest } = this.state;
+    const { loadComments, comments, isGuest, formIsValid } = this.state;
 
     if (isGuest) {
       return (
@@ -202,7 +193,6 @@ class Comments extends Component {
 
     return (
       <div className="comments-container">
-        <Alert />
         {isAuthenticated ? (
           <div className="form">
             <Avatar
@@ -213,7 +203,7 @@ class Comments extends Component {
               {form}
               <Button
                 className="btn btn-secondary"
-                disabled={loading && this.state.loading}
+                disabled={(loading && this.state.loading) || !formIsValid}
               >
                 {loading && this.state.loading ? (
                   <CircularProgress color="secondary" size={23} />
@@ -285,7 +275,6 @@ Comments.propTypes = {
   comments: PropTypes.array,
   voteMessage: PropTypes.string,
   location: PropTypes.object,
-  onSetAlert: PropTypes.func,
   onCommentArticle: PropTypes.func,
   onFetchArticleComments: PropTypes.func,
   onLikeComment: PropTypes.func,
@@ -302,8 +291,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onSetAlert: (message, alertType) =>
-    dispatch(actions.setAlert(message, alertType)),
   onCommentArticle: (articleId, formData) =>
     dispatch(actions.commentArticle(articleId, formData)),
   onFetchArticleComments: articleId =>

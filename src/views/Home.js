@@ -43,7 +43,8 @@ class Home extends Component {
 Home.propTypes = {
   onFetchArticles: PropTypes.func,
   loading: PropTypes.bool,
-  articles: PropTypes.array
+  articles: PropTypes.array,
+  history: PropTypes.object
 };
 
 const mapStateToProps = state => ({

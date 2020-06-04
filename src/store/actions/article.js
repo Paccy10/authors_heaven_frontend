@@ -162,3 +162,52 @@ export const fetchArticle = articleSlug => {
       });
   };
 };
+
+export const deleteArticleStart = () => ({
+  type: actionTypes.DELETE_ARTICLE_START
+});
+
+export const deleteArticleSuccess = (status, message) => ({
+  type: actionTypes.DELETE_ARTICLE_SUCCESS,
+  payload: {
+    status,
+    message
+  }
+});
+
+export const deleteArticleFail = (status, errors) => ({
+  type: actionTypes.DELETE_ARTICLE_FAIL,
+  payload: {
+    status,
+    errors
+  }
+});
+
+export const deleteArticle = articleId => {
+  return dispatch => {
+    setAuthToken();
+    dispatch(deleteArticleStart());
+
+    return axios
+      .delete(`/articles/${articleId}`)
+      .then(response => {
+        dispatch(
+          deleteArticleSuccess(response.data.status, response.data.message)
+        );
+        dispatch(actions.setAlert(response.data.message, 'success'));
+      })
+      .catch(error => {
+        if (error.response) {
+          dispatch(
+            deleteArticleFail(
+              error.response.data.status,
+              error.response.data.errors
+            )
+          );
+          error.response.data.errors.map(err => {
+            dispatch(actions.setAlert(err.msg, 'error'));
+          });
+        }
+      });
+  };
+};

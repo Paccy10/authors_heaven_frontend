@@ -1,3 +1,9 @@
+@mixin tv {
+  @media screen and (min-width: 1500px) {
+    @content;
+  }
+}
+
 @mixin tablet {
   @media screen and (max-width: 1024px) {
     @content;
