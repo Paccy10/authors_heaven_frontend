@@ -162,7 +162,9 @@ class NewArticle extends Component {
                       height: 500,
                       menubar: true,
                       plugins: tinymce_variables.plugins,
-                      toolbar: tinymce_variables.toolbar
+                      toolbar: tinymce_variables.toolbar,
+                      codesample_languages:
+                        tinymce_variables.codesample_languages
                     }}
                     onEditorChange={this.handleEditorChange}
                     value={this.state.body}

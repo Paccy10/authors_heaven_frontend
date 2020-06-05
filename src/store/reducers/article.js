@@ -5,6 +5,7 @@ const initialState = {
   status: null,
   message: null,
   articles: [],
+  metaData: {},
   errors: null,
   loading: false
 };
@@ -36,6 +37,7 @@ export default function (state = initialState, action) {
         status: payload.status,
         message: payload.message,
         articles: payload.articles,
+        metaData: payload.metaData,
         loading: false
       });
 

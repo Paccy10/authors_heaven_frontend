@@ -1,3 +1,5 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { Component } from 'react';
@@ -49,7 +51,14 @@ class Navbar extends Component {
   };
 
   render() {
-    const { isAuthenticated, user } = this.props;
+    const { isAuthenticated, user, notifications } = this.props;
+    const dropDownNotifications = [];
+    for (let i = 0; i < notifications.length; i++) {
+      if (i > 4) {
+        break;
+      }
+      dropDownNotifications.push(notifications[i]);
+    }
     return (
       <header className="navbar">
         <Link to="/" className="logo">
@@ -66,11 +75,6 @@ class Navbar extends Component {
             <li>
               <NavLink exact activeClassName="active" to="/">
                 Home
-              </NavLink>
-            </li>
-            <li>
-              <NavLink activeClassName="active" to="/about">
-                About
               </NavLink>
             </li>
             <li>
@@ -108,36 +112,34 @@ class Navbar extends Component {
                       });
                     }}
                   ></i>
-                  <span className="notifications-badge">0</span>
+                  <span className="notifications-badge">
+                    {notifications.length}
+                  </span>
                   <div className="notifications-sub-menu">
                     <ul>
-                      <li>
-                        <div className="icon">
-                          <i className="fas fa-flag-checkered"></i>
-                        </div>
-                        <div className="message">
-                          Manzi Fabrice has liked your article
-                        </div>
-                      </li>
-                      <li>
-                        <div className="icon">
-                          <i className="fas fa-flag-checkered"></i>
-                        </div>
-                        <div className="message">
-                          Manzi Fabrice has liked your article
-                        </div>
-                      </li>
-                      <li>
-                        <div className="icon">
-                          <i className="fas fa-flag-checkered"></i>
-                        </div>
-                        <div className="message">
-                          Manzi Fabrice has liked your article
-                        </div>
-                      </li>
-                      <li className="show-all">
-                        <p>Show All Notifications</p>
-                      </li>
+                      {notifications.length > 0 ? (
+                        <Aux>
+                          {dropDownNotifications.map((notification, index) => (
+                            <li key={index}>
+                              <div className="icon">
+                                <i className="fas fa-flag-checkered"></i>
+                              </div>
+                              <div className="message">{notification.body}</div>
+                            </li>
+                          ))}
+                          {notifications.length > 5 ? (
+                            <li className="show-all">
+                              <p>Show All Notifications</p>
+                            </li>
+                          ) : null}
+                        </Aux>
+                      ) : (
+                        <li className="no-notification">
+                          <div>
+                            <p>No new Notification</p>
+                          </div>
+                        </li>
+                      )}
                     </ul>
                   </div>
                 </li>
@@ -203,7 +205,8 @@ class Navbar extends Component {
 
 Navbar.propTypes = {
   isAuthenticated: PropTypes.bool,
-  user: PropTypes.object
+  user: PropTypes.object,
+  notifications: PropTypes.array
 };
 
 export default Navbar;

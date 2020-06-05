@@ -1,67 +1,54 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Card,
-  CardHeader,
-  CardMedia,
-  CardContent,
-  CardActions,
-  Avatar,
-  Typography,
-  Button
-} from '@material-ui/core';
+import { Avatar } from '@material-ui/core';
 import stringParser from 'react-to-string';
 import htmlParser from 'html-react-parser';
 import moment from 'moment';
 import articleDefaultImg from '../assets/img/article.svg';
+import Button from './UI/Button';
 
 const HomeArticle = ({ article, onReadMore }) => {
   const { author } = article;
   const body = stringParser(htmlParser(article.body));
 
   return (
-    <Card className="article-card">
-      <CardHeader
-        avatar={
+    <div className="article-card">
+      <div className="article-img">
+        <img
+          src={article.image ? article.image.url : articleDefaultImg}
+          alt=""
+        />
+      </div>
+      <div className="article-info">
+        <div className="info-header">
           <Avatar
             src={author.image ? author.image.url : null}
             className="avatar"
           />
-        }
-        title={`${author.firstname} ${author.lastname}`}
-        subheader={moment(article.createdAt).fromNow()}
-      />
-      <CardMedia
-        className="media"
-        image={article.image ? article.image.url : articleDefaultImg}
-        title={article.title}
-      />
-      <CardContent>
-        <h3>
-          {article.title.length > 50
-            ? `${article.title.substring(0, 50)}...`
-            : article.title}
-        </h3>
-        <Typography variant="body2" color="textSecondary" component="p">
+          <div className="username">
+            <span>{`${author.firstname} ${author.lastname}`}</span>
+            <span>{moment(article.createdAt).fromNow()}</span>
+          </div>
+        </div>
+        <h3 className="article-title">{article.title}</h3>
+        <p className="article-body">
           {body.length > 200 ? `${body.substring(0, 210)}...` : body}
-        </Typography>
-      </CardContent>
-      <CardActions>
+        </p>
         <Button
-          size="small"
-          color="secondary"
+          className="btn btn-secondary"
           onClick={() => onReadMore(article.slug)}
         >
           Read More
         </Button>
-      </CardActions>
-    </Card>
+      </div>
+    </div>
   );
 };
 
 HomeArticle.propTypes = {
-  article: PropTypes.object
+  article: PropTypes.object,
+  onReadMore: PropTypes.func
 };
 
 export default HomeArticle;

@@ -127,10 +127,9 @@
         }
 
         &:nth-child(2) {
-          font-size: 13px;
+          font-size: 12px;
           margin-top: 5px;
           color: rgba(51, 51, 51, 0.39);
-          font-style: italic;
         }
       }
     }
@@ -191,6 +190,15 @@
     h5,
     h6 {
       margin: 20px 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: color(secondary);
+
+      &:hover {
+        color: color(primary);
+      }
     }
   }
   .actions {

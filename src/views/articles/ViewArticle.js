@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import htmlParser from 'html-react-parser';
 import { Redirect } from 'react-router-dom';
+import Prism from 'prismjs';
 import * as actions from '../../store/actions';
 import Alert from '../../components/UI/Alert';
 import Aux from '../../components/hoc/Aux';
@@ -162,6 +163,7 @@ class ViewArticle extends Component {
   };
 
   render() {
+    Prism.highlightAll();
     const { loading, article, location, isAuthenticated, user } = this.props;
     const author = article.author || {};
     const {

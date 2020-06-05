@@ -70,12 +70,13 @@ export const fetchArticlesStart = () => ({
   type: actionTypes.FETCH_ARTICLES_START
 });
 
-export const fetchArticlesSuccess = (status, message, articles) => ({
+export const fetchArticlesSuccess = (status, message, articles, metaData) => ({
   type: actionTypes.FETCH_ARTICLES_SUCCESS,
   payload: {
     status,
     message,
-    articles
+    articles,
+    metaData
   }
 });
 
@@ -87,17 +88,18 @@ export const fetchArticlesFail = (status, errors) => ({
   }
 });
 
-export const fetchArticles = () => {
+export const fetchArticles = pageNumber => {
   return dispatch => {
     dispatch(fetchArticlesStart());
     return axios
-      .get('/articles')
+      .get(`/articles?page=${pageNumber}`)
       .then(response => {
         dispatch(
           fetchArticlesSuccess(
             response.data.status,
             response.data.message,
-            response.data.data.articles
+            response.data.data.articles,
+            response.data.data.metaData
           )
         );
       })
