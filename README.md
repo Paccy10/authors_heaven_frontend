@@ -1,5 +1,7 @@
 # Authors Heaven Frontend
 
+![Getting Started](https://res.cloudinary.com/dhsoe7agl/image/upload/v1591623200/authors%20heaven/Screen_Shot_2020-06-08_at_3.16.58_PM_ei9qdl.png)
+
 ## Vision
 
 Create a community of like minded authors to foster inspiration and innovation by leveraging the modern web.

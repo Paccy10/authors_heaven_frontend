@@ -50,3 +50,47 @@ export const fetchNotifications = () => {
       });
   };
 };
+
+export const readNotificationsStart = () => ({
+  type: actionTypes.READ_NOTIFICATION_START
+});
+
+export const readNotificationSuccess = (status, message) => ({
+  type: actionTypes.READ_NOTIFICATION_SUCCESS,
+  payload: {
+    status,
+    message
+  }
+});
+
+export const readNotificationFail = (status, errors) => ({
+  type: actionTypes.READ_NOTIFICATION_FAIL,
+  payload: {
+    status,
+    errors
+  }
+});
+
+export const readNotification = notificationId => {
+  return dispatch => {
+    setAuthToken();
+    dispatch(fetchNotificationssStart());
+    return axios
+      .get(`/notifications/${notificationId}`)
+      .then(response => {
+        dispatch(
+          readNotificationSuccess(response.data.status, response.data.message)
+        );
+      })
+      .catch(error => {
+        if (error.response) {
+          dispatch(
+            readNotificationFail(
+              error.response.data.status,
+              error.response.data.errors
+            )
+          );
+        }
+      });
+  };
+};

@@ -18,6 +18,13 @@ export default function (state = initialState, action) {
         loading: true
       });
 
+    case actionTypes.READ_NOTIFICATION_START:
+      return updateObject(state, {
+        status: null,
+        message: null,
+        loading: true
+      });
+
     case actionTypes.FETCH_NOTIFICATIONS_SUCCESS:
       return updateObject(state, {
         status: payload.status,
@@ -26,7 +33,15 @@ export default function (state = initialState, action) {
         loading: false
       });
 
+    case actionTypes.READ_NOTIFICATION_SUCCESS:
+      return updateObject(state, {
+        status: payload.status,
+        message: payload.message,
+        loading: false
+      });
+
     case actionTypes.FETCH_NOTIFICATIONS_FAIL:
+    case actionTypes.READ_NOTIFICATION_FAIL:
       return updateObject(state, {
         status: payload.status,
         errors: payload.errors,

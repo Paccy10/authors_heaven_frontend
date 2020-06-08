@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable no-plusplus */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-unused-vars */
@@ -51,7 +52,12 @@ class Navbar extends Component {
   };
 
   render() {
-    const { isAuthenticated, user, notifications } = this.props;
+    const {
+      isAuthenticated,
+      user,
+      notifications,
+      onReadNotification
+    } = this.props;
     const dropDownNotifications = [];
     for (let i = 0; i < notifications.length; i++) {
       if (i > 4) {
@@ -120,7 +126,12 @@ class Navbar extends Component {
                       {notifications.length > 0 ? (
                         <Aux>
                           {dropDownNotifications.map((notification, index) => (
-                            <li key={index}>
+                            <li
+                              key={index}
+                              onClick={() =>
+                                onReadNotification(notification.id)
+                              }
+                            >
                               <div className="icon">
                                 <i className="fas fa-flag-checkered"></i>
                               </div>
