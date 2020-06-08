@@ -9,7 +9,11 @@ export {
   requestResetLink,
   resetPassword
 } from './auth';
-export { fetchUserProfile, updateUserProfile } from './profile';
+export {
+  fetchUserProfile,
+  updateUserProfile,
+  fetchUserArticles
+} from './profile';
 export {
   createArticle,
   fetchArticles,

@@ -116,3 +116,51 @@ export const updateUserProfile = profileData => {
       });
   };
 };
+
+export const fetchUserArticlesStart = () => ({
+  type: actionTypes.FETCH_USER_ARTICLES_START
+});
+
+export const fetchUserArticlesSuccess = (status, message, articles) => ({
+  type: actionTypes.FETCH_USER_ARTICLES_SUCCESS,
+  payload: {
+    status,
+    message,
+    articles
+  }
+});
+
+export const fetchUserArticlesFail = (status, errors) => ({
+  type: actionTypes.FETCH_USER_ARTICLES_FAIL,
+  payload: {
+    status,
+    errors
+  }
+});
+
+export const fetchUserArticles = () => {
+  return dispatch => {
+    dispatch(fetchUserArticlesStart());
+    return axios
+      .get('/users/articles')
+      .then(response => {
+        dispatch(
+          fetchUserArticlesSuccess(
+            response.data.status,
+            response.data.message,
+            response.data.data.articles
+          )
+        );
+      })
+      .catch(error => {
+        if (error.response) {
+          dispatch(
+            fetchUserArticlesFail(
+              error.response.data.status,
+              error.response.data.errors
+            )
+          );
+        }
+      });
+  };
+};

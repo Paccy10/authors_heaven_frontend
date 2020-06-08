@@ -26,7 +26,10 @@ class ViewProfile extends Component {
   };
 
   componentDidMount() {
-    this.props.onFetchUserProfile();
+    const { onFetchUserProfile, onFetchUserArticles } = this.props;
+    onFetchUserProfile().then(async () => {
+      await onFetchUserArticles();
+    });
   }
 
   handleTabChange = (event, newValue) => {
@@ -45,7 +48,7 @@ class ViewProfile extends Component {
   };
 
   render() {
-    const { loading, user } = this.props;
+    const { loading, user, articles, history } = this.props;
 
     let profile = (
       <div className="loader">
@@ -110,7 +113,7 @@ class ViewProfile extends Component {
                   label={
                     <div className="tabLabelContainer">
                       <span>Articles</span>
-                      <span>0</span>
+                      <span>{articles.length}</span>
                     </div>
                   }
                   {...this.a11yProps(0)}
@@ -119,7 +122,7 @@ class ViewProfile extends Component {
                   label={
                     <div className="tabLabelContainer">
                       <span>Followers</span>
-                      <span>0</span>
+                      <span></span>
                     </div>
                   }
                   {...this.a11yProps(1)}
@@ -138,12 +141,11 @@ class ViewProfile extends Component {
             <Paper>
               <TabPanel value={this.state.tabValue} index={0}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <Article />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Article />
-                  </Grid>
+                  {articles.map(article => (
+                    <Grid key={article.id} item xs={12} sm={6}>
+                      <Article article={article} history={history} />
+                    </Grid>
+                  ))}
                 </Grid>
               </TabPanel>
               <TabPanel value={this.state.tabValue} index={1}>
@@ -179,16 +181,19 @@ ViewProfile.propTypes = {
   onFetchUserProfile: PropTypes.func,
   loading: PropTypes.bool,
   user: PropTypes.object,
-  history: PropTypes.object
+  history: PropTypes.object,
+  articles: PropTypes.array
 };
 
 const mapStateToProps = state => ({
   loading: state.profile.loading,
-  user: state.profile.user
+  user: state.profile.user,
+  articles: state.profile.articles
 });
 
 const mapDispatchToProps = dispatch => ({
-  onFetchUserProfile: () => dispatch(actions.fetchUserProfile())
+  onFetchUserProfile: () => dispatch(actions.fetchUserProfile()),
+  onFetchUserArticles: () => dispatch(actions.fetchUserArticles())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewProfile);

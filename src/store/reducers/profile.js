@@ -23,6 +23,14 @@ export default function (state = initialState, action) {
         loading: true
       });
 
+    case actionTypes.FETCH_USER_ARTICLES_START:
+      return updateObject(state, {
+        status: null,
+        message: null,
+        articles: null,
+        loading: true
+      });
+
     case actionTypes.FETCH_USER_PROFILE_SUCCESS:
     case actionTypes.UPDATE_USER_PROFILE_SUCCESS:
       return updateObject(state, {
@@ -32,8 +40,17 @@ export default function (state = initialState, action) {
         loading: false
       });
 
+    case actionTypes.FETCH_USER_ARTICLES_SUCCESS:
+      return updateObject(state, {
+        status: payload.status,
+        message: payload.message,
+        articles: payload.articles,
+        loading: false
+      });
+
     case actionTypes.FETCH_USER_PROFILE_FAIL:
     case actionTypes.UPDATE_USER_PROFILE_FAIL:
+    case actionTypes.FETCH_USER_ARTICLES_FAIL:
       return updateObject(state, {
         status: payload.status,
         errors: payload.errors,
