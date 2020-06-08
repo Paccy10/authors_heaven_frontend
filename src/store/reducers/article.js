@@ -18,6 +18,7 @@ export default function (state = initialState, action) {
     case actionTypes.FETCH_ARTICLES_START:
     case actionTypes.FETCH_ARTICLE_START:
     case actionTypes.DELETE_ARTICLE_START:
+    case actionTypes.UPDATE_ARTICLE_START:
       return updateObject(state, {
         ...initialState,
         loading: true
@@ -25,6 +26,7 @@ export default function (state = initialState, action) {
 
     case actionTypes.CREATE_ARTICLE_SUCCESS:
     case actionTypes.FETCH_ARTICLE_SUCCESS:
+    case actionTypes.UPDATE_ARTICLE_SUCCESS:
       return updateObject(state, {
         status: payload.status,
         message: payload.message,
@@ -52,6 +54,7 @@ export default function (state = initialState, action) {
     case actionTypes.FETCH_ARTICLES_FAIL:
     case actionTypes.FETCH_ARTICLE_FAIL:
     case actionTypes.DELETE_ARTICLE_FAIL:
+    case actionTypes.UPDATE_ARTICLE_FAIL:
       return updateObject(state, {
         status: payload.status,
         errors: payload.errors,

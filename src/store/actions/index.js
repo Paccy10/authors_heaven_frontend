@@ -14,7 +14,8 @@ export {
   createArticle,
   fetchArticles,
   fetchArticle,
-  deleteArticle
+  deleteArticle,
+  updateArticle
 } from './article';
 export {
   likeArticle,

@@ -162,6 +162,11 @@ class ViewArticle extends Component {
     onDeleteArticle(article.id);
   };
 
+  onEdit = () => {
+    const { history, article } = this.props;
+    history.push(`/articles/${article.slug}/edit`);
+  };
+
   render() {
     Prism.highlightAll();
     const { loading, article, location, isAuthenticated, user } = this.props;
@@ -187,7 +192,7 @@ class ViewArticle extends Component {
       <div className="container">
         {isAuthenticated && user.id === article.authorId ? (
           <div className="article-actions">
-            <span>
+            <span onClick={this.onEdit}>
               <i className="fas fa-edit"></i>
             </span>
             <span onClick={this.onOpenDeleteModal}>

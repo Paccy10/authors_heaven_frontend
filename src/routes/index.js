@@ -12,6 +12,7 @@ import ViewProfile from '../views/users/ViewProfile';
 import EditProfile from '../views/users/EditProfile';
 import NewArticle from '../views/articles/NewArticle';
 import ViewArticle from '../views/articles/ViewArticle';
+import EditArticle from '../views/articles/EditArticle';
 
 const Routes = () => {
   return (
@@ -26,7 +27,11 @@ const Routes = () => {
       <PrivateRoute exact path="/profile/me" component={ViewProfile} />
       <PrivateRoute path="/profile/me/edit" component={EditProfile} />
       <PrivateRoute path="/articles/new" component={NewArticle} />
-      <Route path="/articles/:articleSlug" component={ViewArticle} />
+      <Route exact path="/articles/:articleSlug" component={ViewArticle} />
+      <PrivateRoute
+        path="/articles/:articleSlug/edit"
+        component={EditArticle}
+      />
     </Switch>
   );
 };

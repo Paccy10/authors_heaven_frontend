@@ -213,3 +213,65 @@ export const deleteArticle = articleId => {
       });
   };
 };
+
+export const updateArticleStart = () => ({
+  type: actionTypes.UPDATE_ARTICLE_START
+});
+
+export const updateArticleSuccess = (status, message, article) => ({
+  type: actionTypes.UPDATE_ARTICLE_SUCCESS,
+  payload: {
+    status,
+    message,
+    article
+  }
+});
+
+export const updateArticleFail = (status, errors) => ({
+  type: actionTypes.UPDATE_ARTICLE_FAIL,
+  payload: {
+    status,
+    errors
+  }
+});
+
+export const updateArticle = (articleId, articleData) => {
+  return dispatch => {
+    setAuthToken();
+    dispatch(updateArticleStart());
+
+    const formData = new FormData();
+    formData.append('title', articleData.title);
+    formData.append('body', articleData.body);
+    formData.append('tags', articleData.tags);
+    formData.append('image', articleData.image);
+
+    return axios
+      .put(`/articles/${articleId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      .then(response => {
+        dispatch(
+          updateArticleSuccess(
+            response.data.status,
+            response.data.message,
+            response.data.data.article
+          )
+        );
+        dispatch(actions.setAlert(response.data.message, 'success'));
+      })
+      .catch(error => {
+        if (error.response) {
+          dispatch(
+            updateArticleFail(
+              error.response.data.status,
+              error.response.data.errors
+            )
+          );
+          error.response.data.errors.map(err => {
+            dispatch(actions.setAlert(err.msg, 'error'));
+          });
+        }
+      });
+  };
+};

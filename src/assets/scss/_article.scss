@@ -1,4 +1,9 @@
 .new-article-card {
+  .loader {
+    padding: 50px;
+    display: flex;
+    justify-content: center;
+  }
   h2 {
     color: color(textDark);
     text-align: center;
