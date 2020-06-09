@@ -140,6 +140,7 @@ export const fetchUserArticlesFail = (status, errors) => ({
 
 export const fetchUserArticles = () => {
   return dispatch => {
+    setAuthToken();
     dispatch(fetchUserArticlesStart());
     return axios
       .get('/users/articles')
@@ -156,6 +157,104 @@ export const fetchUserArticles = () => {
         if (error.response) {
           dispatch(
             fetchUserArticlesFail(
+              error.response.data.status,
+              error.response.data.errors
+            )
+          );
+        }
+      });
+  };
+};
+
+export const fetchUserFollowersStart = () => ({
+  type: actionTypes.FETCH_USER_FOLLOWERS_START
+});
+
+export const fetchUserFollowersSuccess = (status, message, followers) => ({
+  type: actionTypes.FETCH_USER_FOLLOWERS_SUCCESS,
+  payload: {
+    status,
+    message,
+    followers
+  }
+});
+
+export const fetchUserFollowersFail = (status, errors) => ({
+  type: actionTypes.FETCH_USER_FOLLOWERS_FAIL,
+  payload: {
+    status,
+    errors
+  }
+});
+
+export const fetchUserFollowers = () => {
+  return dispatch => {
+    setAuthToken();
+    dispatch(fetchUserFollowersStart());
+    return axios
+      .get('/users/followers')
+      .then(response => {
+        dispatch(
+          fetchUserFollowersSuccess(
+            response.data.status,
+            response.data.message,
+            response.data.data.followers
+          )
+        );
+      })
+      .catch(error => {
+        if (error.response) {
+          dispatch(
+            fetchUserArticlesFail(
+              error.response.data.status,
+              error.response.data.errors
+            )
+          );
+        }
+      });
+  };
+};
+
+export const fetchUserFolloweesStart = () => ({
+  type: actionTypes.FETCH_USER_FOLLOWEES_START
+});
+
+export const fetchUserFolloweesSuccess = (status, message, followees) => ({
+  type: actionTypes.FETCH_USER_FOLLOWEES_SUCCESS,
+  payload: {
+    status,
+    message,
+    followees
+  }
+});
+
+export const fetchUserFolloweesFail = (status, errors) => ({
+  type: actionTypes.FETCH_USER_FOLLOWEES_FAIL,
+  payload: {
+    status,
+    errors
+  }
+});
+
+export const fetchUserFollowees = () => {
+  return dispatch => {
+    setAuthToken();
+    dispatch(fetchUserFolloweesStart());
+    return axios
+      .get('/users/followees')
+      .then(response => {
+        dispatch(
+          fetchUserFolloweesSuccess(
+            response.data.status,
+            response.data.message,
+            response.data.data.followees
+          )
+        );
+      })
+      .catch(error => {
+        if (error.response) {
+          dispatch(
+            fetchUserFolloweesFail(
               error.response.data.status,
               error.response.data.errors
             )

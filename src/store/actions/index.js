@@ -12,7 +12,9 @@ export {
 export {
   fetchUserProfile,
   updateUserProfile,
-  fetchUserArticles
+  fetchUserArticles,
+  fetchUserFollowers,
+  fetchUserFollowees
 } from './profile';
 export {
   createArticle,
