@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 import TabPanel from '../../components/UI/TabPanel';
 import Alert from '../../components/UI/Alert';
 import profileImg from '../../assets/img/man.png';
+import noData from '../../assets/img/no_data.svg';
 import Article from '../../components/Article';
 import * as actions from '../../store/actions';
 
@@ -122,7 +123,7 @@ class ViewProfile extends Component {
                   label={
                     <div className="tabLabelContainer">
                       <span>Followers</span>
-                      <span></span>
+                      <span>0</span>
                     </div>
                   }
                   {...this.a11yProps(1)}
@@ -141,11 +142,23 @@ class ViewProfile extends Component {
             <Paper>
               <TabPanel value={this.state.tabValue} index={0}>
                 <Grid container spacing={2}>
-                  {articles.map(article => (
-                    <Grid key={article.id} item xs={12} sm={6}>
-                      <Article article={article} history={history} />
-                    </Grid>
-                  ))}
+                  {articles.length > 0 ? (
+                    articles.map(article => (
+                      // eslint-disable-next-line react/jsx-indent
+                      <Grid key={article.id} item xs={12} sm={6}>
+                        <Article article={article} history={history} />
+                      </Grid>
+                    ))
+                  ) : (
+                    <div className="no-content">
+                      <div>
+                        <img src={noData} alt="" />
+                      </div>
+                      <p>
+                        Sorry, currently you haven&apos;t posted any article!
+                      </p>
+                    </div>
+                  )}
                 </Grid>
               </TabPanel>
               <TabPanel value={this.state.tabValue} index={1}>
@@ -179,6 +192,7 @@ class ViewProfile extends Component {
 
 ViewProfile.propTypes = {
   onFetchUserProfile: PropTypes.func,
+  onFetchUserArticles: PropTypes.func,
   loading: PropTypes.bool,
   user: PropTypes.object,
   history: PropTypes.object,
