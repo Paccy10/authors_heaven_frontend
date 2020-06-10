@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { Component } from 'react';
@@ -26,7 +27,8 @@ import * as actions from '../../store/actions';
 
 class ViewProfile extends Component {
   state = {
-    tabValue: 0
+    tabValue: 0,
+    loadUnfollow: false
   };
 
   componentDidMount() {
@@ -58,6 +60,35 @@ class ViewProfile extends Component {
     this.props.history.push('/profile/me/edit');
   };
 
+  followUser = async (followerId, follower) => {
+    this.setState({ loadUnfollow: true });
+    const { onFollowUser, followees } = this.props;
+    await onFollowUser(followerId);
+    if (this.props.profileMessage === 'User successfully followed') {
+      const followee = {
+        followeeId: followerId,
+        followee: follower
+      };
+      if (!followees.includes(followee)) {
+        followees.push(followee);
+      }
+      this.setState({ loadUnfollow: false });
+    }
+  };
+
+  unfollowUser = async followeeId => {
+    this.setState({ loadUnfollow: true });
+    const { onUnfollowUser, followees } = this.props;
+    await onUnfollowUser(followeeId);
+    if (this.props.profileMessage === 'User successfully unfollowed') {
+      const index = followees.findIndex(
+        followee => followee.followeeId === followeeId
+      );
+      followees.splice(index, 1);
+      this.setState({ loadUnfollow: false });
+    }
+  };
+
   render() {
     const {
       loadingProfile,
@@ -68,8 +99,13 @@ class ViewProfile extends Component {
       articles,
       followers,
       followees,
-      history
+      history,
+      // onFollowUser,
+      // onUnfollowUser,
+      profileMessage
     } = this.props;
+
+    const { loadUnfollow } = this.state;
 
     let profile = (
       <div className="loader">
@@ -170,7 +206,6 @@ class ViewProfile extends Component {
                     </Grid>
                   ) : articles.length > 0 ? (
                     articles.map(article => (
-                      // eslint-disable-next-line react/jsx-indent
                       <Grid key={article.id} item xs={12} sm={6}>
                         <Article article={article} history={history} />
                       </Grid>
@@ -196,12 +231,21 @@ class ViewProfile extends Component {
                   </Grid>
                 ) : followers.length > 0 ? (
                   followers.map(follower => (
-                    // eslint-disable-next-line react/jsx-indent
                     <Grid key={follower.followerId} item xs={12}>
                       <Follower
                         follower={follower.follower}
                         followerId={follower.followerId}
                         followees={followees}
+                        onFollowUser={() =>
+                          this.followUser(
+                            follower.followerId,
+                            follower.follower
+                          )
+                        }
+                        onUnfollowUser={() =>
+                          this.unfollowUser(follower.followerId, follower)
+                        }
+                        profileMessage={profileMessage}
                       />
                     </Grid>
                   ))
@@ -223,9 +267,14 @@ class ViewProfile extends Component {
                   </Grid>
                 ) : followees.length > 0 ? (
                   followees.map(followee => (
-                    // eslint-disable-next-line react/jsx-indent
                     <Grid key={followee.followeeId} item xs={12}>
-                      <Followee followee={followee.followee} />
+                      <Followee
+                        followee={followee.followee}
+                        onUnfollowUser={() =>
+                          this.unfollowUser(followee.followeeId)
+                        }
+                        loading={loadUnfollow}
+                      />
                     </Grid>
                   ))
                 ) : (
@@ -275,7 +324,11 @@ ViewProfile.propTypes = {
   history: PropTypes.object,
   articles: PropTypes.array,
   followers: PropTypes.array,
-  followees: PropTypes.array
+  followees: PropTypes.array,
+  onFollowUser: PropTypes.func,
+  onUnfollowUser: PropTypes.func,
+  profileMessage: PropTypes.string,
+  loadingFollow: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
@@ -286,14 +339,18 @@ const mapStateToProps = state => ({
   user: state.profile.user,
   articles: state.profile.articles,
   followers: state.profile.followers,
-  followees: state.profile.followees
+  followees: state.profile.followees,
+  profileMessage: state.profile.message,
+  loadingFollow: state.profile.loadingFollow
 });
 
 const mapDispatchToProps = dispatch => ({
   onFetchUserProfile: () => dispatch(actions.fetchUserProfile()),
   onFetchUserArticles: () => dispatch(actions.fetchUserArticles()),
   onFetchUserFollowers: () => dispatch(actions.fetchUserFollowers()),
-  onFetchUserFollowees: () => dispatch(actions.fetchUserFollowees())
+  onFetchUserFollowees: () => dispatch(actions.fetchUserFollowees()),
+  onFollowUser: userId => dispatch(actions.followUser(userId)),
+  onUnfollowUser: userId => dispatch(actions.unfollowUser(userId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewProfile);

@@ -1,55 +1,94 @@
-import React, { useState, useEffect } from 'react';
-import { Avatar } from '@material-ui/core';
+/* eslint-disable no-nested-ternary */
+import React, { Component } from 'react';
+import { Avatar, CircularProgress } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ReadMoreAndLess from 'react-read-more-less';
 
-const Follower = ({ follower, followerId, followees }) => {
-  const [follow, setFollow] = useState(false);
+class Follower extends Component {
+  state = {
+    follow: false,
+    loading: false
+  };
 
-  useEffect(() => {
+  componentDidMount() {
+    const { followees, followerId } = this.props;
     for (const followee of followees) {
       if (followee.followeeId === followerId) {
-        setFollow(true);
+        this.setState({ follow: true });
       }
     }
-  }, [followees]);
+  }
 
-  return (
-    <div className="follower">
-      <Avatar
-        src={follower.image ? follower.image.url : ''}
-        className="avatar"
-      />
-      <div className="follower-details">
-        <p className="name">
-          {follower.firstname} {follower.lastname}
-        </p>
-        <div className="follower-bio">
-          {follower.bio ? (
-            <ReadMoreAndLess
-              className="read-more-content"
-              charLimit={150}
-              readMoreText="Show more"
-              readLessText="Show less"
-            >
-              {follower.bio}
-            </ReadMoreAndLess>
-          ) : (
-            ''
-          )}
+  followUser = async () => {
+    this.setState({ loading: true });
+    const { onFollowUser } = this.props;
+    await onFollowUser();
+    this.setState({ loading: false, follow: true });
+  };
+
+  unfollowUser = async () => {
+    this.setState({ loading: true });
+    const { onUnfollowUser } = this.props;
+    await onUnfollowUser();
+    this.setState({ loading: false, follow: false });
+  };
+
+  render() {
+    const { follower } = this.props;
+    const { follow, loading } = this.state;
+
+    return (
+      <div className="follower">
+        <Avatar
+          src={follower.image ? follower.image.url : ''}
+          className="avatar"
+        />
+        <div className="follower-details">
+          <p className="name">
+            {follower.firstname} {follower.lastname}
+          </p>
+          <div className="follower-bio">
+            {follower.bio ? (
+              <ReadMoreAndLess
+                className="read-more-content"
+                charLimit={150}
+                readMoreText="Show more"
+                readLessText="Show less"
+              >
+                {follower.bio}
+              </ReadMoreAndLess>
+            ) : (
+              ''
+            )}
+          </div>
+        </div>
+        <div className="action">
+          <button
+            type="button"
+            className={`btn-follow ${follow ? 'following' : ''}`}
+            disabled={loading}
+            onClick={follow ? this.unfollowUser : this.followUser}
+          >
+            {loading ? (
+              <CircularProgress color="primary" size={20} />
+            ) : follow ? (
+              'Unfollow'
+            ) : (
+              'Follow'
+            )}
+          </button>
         </div>
       </div>
-      <div className="action">
-        <button type="button">{follow ? 'Unfollow' : 'Follow'}</button>
-      </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 Follower.propTypes = {
   follower: PropTypes.object,
   followerId: PropTypes.number,
-  followees: PropTypes.array
+  followees: PropTypes.array,
+  onFollowUser: PropTypes.func,
+  onUnfollowUser: PropTypes.func
 };
 
 export default Follower;

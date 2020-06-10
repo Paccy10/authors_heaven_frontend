@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/jsx-indent */
 import React, { Component } from 'react';
@@ -26,18 +27,33 @@ class ViewArticle extends Component {
     isGuest: false,
     rating: 0,
     loading: false,
-    openDeleteModel: false
+    openDeleteModel: false,
+    follow: false
   };
 
   componentDidMount() {
-    const { onFetchArticle, match, onFetchArticleRatings } = this.props;
+    const {
+      onFetchArticle,
+      match,
+      onFetchArticleRatings,
+      onFetchUserFollowees
+    } = this.props;
     onFetchArticle(match.params.articleSlug).then(() => {
-      const { votes, hasBookmarked, id } = this.props.article;
-      onFetchArticleRatings(id).then(() => {
-        const { ratings, user } = this.props;
+      const { votes, hasBookmarked, id, authorId } = this.props.article;
+      onFetchArticleRatings(id).then(async () => {
+        const { ratings, user, isAuthenticated } = this.props;
         for (const rating of ratings) {
           if (rating.userId === user.id) {
             this.setState({ rating: rating.rating });
+          }
+        }
+        if (isAuthenticated) {
+          await onFetchUserFollowees();
+          const { followees } = this.props;
+          for (const followee of followees) {
+            if (followee.followeeId === authorId) {
+              this.setState({ follow: true });
+            }
           }
         }
       });
@@ -167,9 +183,32 @@ class ViewArticle extends Component {
     history.push(`/articles/${article.slug}/edit`);
   };
 
+  followUser = async () => {
+    const { onFollowUser, article } = this.props;
+    await onFollowUser(article.authorId);
+    if (this.props.profileMessage === 'User successfully followed') {
+      this.setState({ follow: true });
+    }
+  };
+
+  unfollowUser = async () => {
+    const { onUnfollowUser, article } = this.props;
+    await onUnfollowUser(article.authorId);
+    if (this.props.profileMessage === 'User successfully unfollowed') {
+      this.setState({ follow: false });
+    }
+  };
+
   render() {
     Prism.highlightAll();
-    const { loading, article, location, isAuthenticated, user } = this.props;
+    const {
+      loading,
+      article,
+      location,
+      isAuthenticated,
+      user,
+      loadingFollow
+    } = this.props;
     const author = article.author || {};
     const {
       likes,
@@ -179,7 +218,8 @@ class ViewArticle extends Component {
       hasBookmarked,
       isGuest,
       rating,
-      openDeleteModel
+      openDeleteModel,
+      follow
     } = this.state;
 
     if (isGuest) {
@@ -225,6 +265,22 @@ class ViewArticle extends Component {
                         {article.readingTime} read
                       </span>
                     </div>
+                    {isAuthenticated && user.id !== article.authorId ? (
+                      <button
+                        type="button"
+                        className={`btn-follow ${follow ? 'following' : ''}`}
+                        disabled={loadingFollow}
+                        onClick={follow ? this.unfollowUser : this.followUser}
+                      >
+                        {loadingFollow ? (
+                          <CircularProgress color="primary" size={20} />
+                        ) : follow ? (
+                          'Unfollow'
+                        ) : (
+                          'Follow'
+                        )}
+                      </button>
+                    ) : null}
                   </div>
                   {article.image ? (
                     <div className="image-container">
@@ -337,7 +393,13 @@ ViewArticle.propTypes = {
   ratingMessage: PropTypes.string,
   onDeleteArticle: PropTypes.func,
   message: PropTypes.string,
-  history: PropTypes.object
+  history: PropTypes.object,
+  onFetchUserFollowees: PropTypes.func,
+  followees: PropTypes.array,
+  onFollowUser: PropTypes.func,
+  onUnfollowUser: PropTypes.func,
+  profileMessage: PropTypes.string,
+  loadingFollow: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
@@ -349,7 +411,10 @@ const mapStateToProps = state => ({
   bookmarkMessage: state.bookmark.message,
   ratingMessage: state.rating.message,
   message: state.article.message,
-  ratings: state.rating.ratings
+  ratings: state.rating.ratings,
+  followees: state.profile.followees,
+  profileMessage: state.profile.message,
+  loadingFollow: state.profile.loadingFollow
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -363,7 +428,10 @@ const mapDispatchToProps = dispatch => ({
     dispatch(actions.fetchArticleRatings(articleId)),
   onRateArticle: (articleId, formData) =>
     dispatch(actions.rateArticle(articleId, formData)),
-  onDeleteArticle: articleId => dispatch(actions.deleteArticle(articleId))
+  onDeleteArticle: articleId => dispatch(actions.deleteArticle(articleId)),
+  onFetchUserFollowees: () => dispatch(actions.fetchUserFollowees()),
+  onFollowUser: userId => dispatch(actions.followUser(userId)),
+  onUnfollowUser: userId => dispatch(actions.unfollowUser(userId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewArticle);

@@ -263,3 +263,91 @@ export const fetchUserFollowees = () => {
       });
   };
 };
+
+export const followUserStart = () => ({
+  type: actionTypes.FOLLOW_USER_START
+});
+
+export const followUserSuccess = (status, message) => ({
+  type: actionTypes.FOLLOW_USER_SUCCESS,
+  payload: {
+    status,
+    message
+  }
+});
+
+export const followUserFail = (status, errors) => ({
+  type: actionTypes.FOLLOW_USER_FAIL,
+  payload: {
+    status,
+    errors
+  }
+});
+
+export const followUser = userId => {
+  return dispatch => {
+    setAuthToken();
+    dispatch(followUserStart());
+    return axios
+      .post(`/users/${userId}/follow`)
+      .then(response => {
+        dispatch(
+          followUserSuccess(response.data.status, response.data.message)
+        );
+      })
+      .catch(error => {
+        if (error.response) {
+          dispatch(
+            followUserFail(
+              error.response.data.status,
+              error.response.data.errors
+            )
+          );
+        }
+      });
+  };
+};
+
+export const unfollowUserStart = () => ({
+  type: actionTypes.UNFOLLOW_USER_START
+});
+
+export const unfollowUserSuccess = (status, message) => ({
+  type: actionTypes.UNFOLLOW_USER_SUCCESS,
+  payload: {
+    status,
+    message
+  }
+});
+
+export const unfollowUserFail = (status, errors) => ({
+  type: actionTypes.UNFOLLOW_USER_FAIL,
+  payload: {
+    status,
+    errors
+  }
+});
+
+export const unfollowUser = userId => {
+  return dispatch => {
+    setAuthToken();
+    dispatch(unfollowUserStart());
+    return axios
+      .post(`/users/${userId}/unfollow`)
+      .then(response => {
+        dispatch(
+          unfollowUserSuccess(response.data.status, response.data.message)
+        );
+      })
+      .catch(error => {
+        if (error.response) {
+          dispatch(
+            unfollowUserFail(
+              error.response.data.status,
+              error.response.data.errors
+            )
+          );
+        }
+      });
+  };
+};

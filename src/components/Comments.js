@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
 import React, { Component } from 'react';
 import { CircularProgress, Avatar } from '@material-ui/core';
@@ -213,9 +214,9 @@ class Comments extends Component {
               </Button>
             </form>
           </div>
-        ) : (
-          <h3>Comments</h3>
-        )}
+        ) : comments.length > 0 ? (
+          <h3>Comments ({comments.length})</h3>
+        ) : null}
         {loading && loadComments ? (
           <div className="loader">
             <CircularProgress color="secondary" size={23} />
