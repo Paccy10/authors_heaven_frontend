@@ -21,6 +21,7 @@ import Alert from '../../components/UI/Alert';
 import Article from '../../components/Article';
 import Follower from '../../components/Follower';
 import Followee from '../../components/Followee';
+import BookmarkedArticle from '../../components/BookmarkedArticle';
 import profileImg from '../../assets/img/man.png';
 import noData from '../../assets/img/no_data.svg';
 import * as actions from '../../store/actions';
@@ -36,12 +37,14 @@ class ViewProfile extends Component {
       onFetchUserProfile,
       onFetchUserArticles,
       onFetchUserFollowers,
-      onFetchUserFollowees
+      onFetchUserFollowees,
+      onFetchUserBookmarks
     } = this.props;
     onFetchUserProfile().then(async () => {
       await onFetchUserArticles();
       await onFetchUserFollowers();
       await onFetchUserFollowees();
+      await onFetchUserBookmarks();
     });
   }
 
@@ -95,13 +98,13 @@ class ViewProfile extends Component {
       loadingArticles,
       loadingFollowers,
       loadingFollowees,
+      loadingBookmarks,
       user,
       articles,
       followers,
       followees,
+      bookmarks,
       history,
-      // onFollowUser,
-      // onUnfollowUser,
       profileMessage
     } = this.props;
 
@@ -193,11 +196,20 @@ class ViewProfile extends Component {
                   }
                   {...this.a11yProps(2)}
                 />
+                <Tab
+                  label={
+                    <div className="tabLabelContainer">
+                      <span>Bookmarks</span>
+                      <span>{bookmarks.length}</span>
+                    </div>
+                  }
+                  {...this.a11yProps(2)}
+                />
               </Tabs>
             </AppBar>
             <Paper>
               <TabPanel value={this.state.tabValue} index={0}>
-                <Grid container spacing={2}>
+                <Grid container spacing={4}>
                   {loadingArticles ? (
                     <Grid item xs={12}>
                       <div className="loader">
@@ -288,6 +300,36 @@ class ViewProfile extends Component {
                   </div>
                 )}
               </TabPanel>
+              <TabPanel value={this.state.tabValue} index={3}>
+                <Grid container spacing={4}>
+                  {loadingBookmarks ? (
+                    <Grid item xs={12}>
+                      <div className="loader">
+                        <CircularProgress color="primary" size={50} />
+                      </div>
+                    </Grid>
+                  ) : bookmarks.length > 0 ? (
+                    bookmarks.map(bookmark => (
+                      <Grid key={bookmark.id} item xs={12} sm={6}>
+                        <BookmarkedArticle
+                          article={bookmark.article}
+                          history={history}
+                        />
+                      </Grid>
+                    ))
+                  ) : (
+                    <div className="no-content">
+                      <div>
+                        <img src={noData} alt="" />
+                      </div>
+                      <p>
+                        Sorry, currently you haven&apos;t bookmarked any
+                        article!
+                      </p>
+                    </div>
+                  )}
+                </Grid>
+              </TabPanel>
             </Paper>
           </Grid>
         </Grid>
@@ -320,15 +362,18 @@ ViewProfile.propTypes = {
   loadingArticles: PropTypes.bool,
   loadingFollowers: PropTypes.bool,
   loadingFollowees: PropTypes.bool,
+  loadingBookmarks: PropTypes.bool,
   user: PropTypes.object,
   history: PropTypes.object,
   articles: PropTypes.array,
   followers: PropTypes.array,
   followees: PropTypes.array,
+  bookmarks: PropTypes.array,
   onFollowUser: PropTypes.func,
   onUnfollowUser: PropTypes.func,
   profileMessage: PropTypes.string,
-  loadingFollow: PropTypes.bool
+  loadingFollow: PropTypes.bool,
+  onFetchUserBookmarks: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -336,10 +381,12 @@ const mapStateToProps = state => ({
   loadingArticles: state.profile.loadingArticles,
   loadingFollowers: state.profile.loadingFollowers,
   loadingFollowees: state.profile.loadingFollowees,
+  loadingBookmarks: state.profile.loadingBookmarks,
   user: state.profile.user,
   articles: state.profile.articles,
   followers: state.profile.followers,
   followees: state.profile.followees,
+  bookmarks: state.profile.bookmarks,
   profileMessage: state.profile.message,
   loadingFollow: state.profile.loadingFollow
 });
@@ -350,7 +397,8 @@ const mapDispatchToProps = dispatch => ({
   onFetchUserFollowers: () => dispatch(actions.fetchUserFollowers()),
   onFetchUserFollowees: () => dispatch(actions.fetchUserFollowees()),
   onFollowUser: userId => dispatch(actions.followUser(userId)),
-  onUnfollowUser: userId => dispatch(actions.unfollowUser(userId))
+  onUnfollowUser: userId => dispatch(actions.unfollowUser(userId)),
+  onFetchUserBookmarks: () => dispatch(actions.fetchUserBookmarks())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewProfile);

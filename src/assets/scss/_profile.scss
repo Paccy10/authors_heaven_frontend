@@ -71,6 +71,39 @@
     }
 
     .title {
+      color: color(textDark);
+      font-weight: 600;
+      font-size: 22px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1; /* number of lines to show */
+      -webkit-box-orient: vertical;
+    }
+
+    .body {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3; /* number of lines to show */
+      -webkit-box-orient: vertical;
+    }
+  }
+
+  .bookmarked-article-card {
+    .avatar {
+      background-color: color(secondary);
+    }
+    .media {
+      height: 0;
+      padding-top: 56.25%;
+      background-color: color(secondary);
+    }
+
+    .title {
+      color: color(textDark);
+      font-weight: 600;
+      font-size: 22px;
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;

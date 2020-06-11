@@ -2,17 +2,20 @@
 import React, { Component } from 'react';
 import {
   Card,
-  CardActionArea,
+  CardHeader,
   CardMedia,
+  CardActionArea,
   CardContent,
-  Typography
+  Typography,
+  Avatar
 } from '@material-ui/core';
 import stringParser from 'react-to-string';
 import htmlParser from 'html-react-parser';
 import PropTypes from 'prop-types';
-import defaultArticleImg from '../assets/img/article.svg';
+import moment from 'moment';
+import articleDefaultImg from '../assets/img/article.svg';
 
-class Article extends Component {
+class BookmarkedArticle extends Component {
   onView = () => {
     const { history, article } = this.props;
     history.push(`/articles/${article.slug}`);
@@ -20,14 +23,27 @@ class Article extends Component {
 
   render() {
     const { article } = this.props;
+    const { author } = article;
     const body = stringParser(htmlParser(article.body));
+
     return (
-      <Card className="article-card" onClick={this.onView}>
+      <Card className="bookmarked-article-card" onClick={this.onView}>
         <CardActionArea>
+          <CardHeader
+            avatar={
+              <Avatar
+                aria-label="recipe"
+                src={author.image ? author.image.url : ''}
+                className="avatar"
+              />
+            }
+            title={`${author.firstname} ${author.lastname}`}
+            subheader={moment(article.createdAt).fromNow()}
+          />
           <CardMedia
             className="media"
-            image={article.image ? article.image.url : defaultArticleImg}
-            title="Contemplative Reptile"
+            image={article.image ? article.image.url : articleDefaultImg}
+            title="Paella dish"
           />
           <CardContent>
             <Typography
@@ -53,9 +69,9 @@ class Article extends Component {
   }
 }
 
-Article.propTypes = {
+BookmarkedArticle.propTypes = {
   article: PropTypes.object,
   history: PropTypes.object
 };
 
-export default Article;
+export default BookmarkedArticle;

@@ -16,7 +16,8 @@ export {
   fetchUserFollowers,
   fetchUserFollowees,
   followUser,
-  unfollowUser
+  unfollowUser,
+  fetchUserBookmarks
 } from './profile';
 export {
   createArticle,

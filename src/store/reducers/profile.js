@@ -8,12 +8,14 @@ const initialState = {
   articles: [],
   followers: [],
   followees: [],
+  bookmarks: [],
   errors: null,
   loadingProfile: false,
   loadingArticles: false,
   loadingFollowers: false,
   loadingFollowees: false,
-  loadingFollow: false
+  loadingFollow: false,
+  loadingBookmarks: false
 };
 
 export default function (state = initialState, action) {
@@ -49,6 +51,14 @@ export default function (state = initialState, action) {
         message: null,
         followees: [],
         loadingFollowees: true
+      });
+
+    case actionTypes.FETCH_USER_BOOKMARKS_START:
+      return updateObject(state, {
+        status: null,
+        message: null,
+        bookmarks: [],
+        loadingBookmarks: true
       });
 
     case actionTypes.FOLLOW_USER_START:
@@ -92,6 +102,14 @@ export default function (state = initialState, action) {
         loadingFollowees: false
       });
 
+    case actionTypes.FETCH_USER_BOOKMARKS_SUCCESS:
+      return updateObject(state, {
+        status: payload.status,
+        message: payload.message,
+        bookmarks: payload.bookmarks,
+        loadingBookmarks: false
+      });
+
     case actionTypes.FOLLOW_USER_SUCCESS:
     case actionTypes.UNFOLLOW_USER_SUCCESS:
       return updateObject(state, {
@@ -127,6 +145,12 @@ export default function (state = initialState, action) {
         status: payload.status,
         errors: payload.errors,
         loadingFollowees: false
+      });
+    case actionTypes.FETCH_USER_BOOKMARKS_FAIL:
+      return updateObject(state, {
+        status: payload.status,
+        errors: payload.errors,
+        loadingBookmarks: false
       });
 
     case actionTypes.FOLLOW_USER_FAIL:

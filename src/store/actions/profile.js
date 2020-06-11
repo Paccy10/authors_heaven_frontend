@@ -351,3 +351,52 @@ export const unfollowUser = userId => {
       });
   };
 };
+
+export const fetchUserBookmarksStart = () => ({
+  type: actionTypes.FETCH_USER_BOOKMARKS_START
+});
+
+export const fetchUserBookmarksSuccess = (status, message, bookmarks) => ({
+  type: actionTypes.FETCH_USER_BOOKMARKS_SUCCESS,
+  payload: {
+    status,
+    message,
+    bookmarks
+  }
+});
+
+export const fetchUserBookmarksFail = (status, errors) => ({
+  type: actionTypes.FETCH_USER_BOOKMARKS_FAIL,
+  payload: {
+    status,
+    errors
+  }
+});
+
+export const fetchUserBookmarks = () => {
+  return dispatch => {
+    setAuthToken();
+    dispatch(fetchUserBookmarksStart());
+    return axios
+      .get('/users/bookmarks')
+      .then(response => {
+        dispatch(
+          fetchUserBookmarksSuccess(
+            response.data.status,
+            response.data.message,
+            response.data.data.bookmarks
+          )
+        );
+      })
+      .catch(error => {
+        if (error.response) {
+          dispatch(
+            fetchUserBookmarksFail(
+              error.response.data.status,
+              error.response.data.errors
+            )
+          );
+        }
+      });
+  };
+};
