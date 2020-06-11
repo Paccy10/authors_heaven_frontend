@@ -83,11 +83,6 @@ class Navbar extends Component {
                 Home
               </NavLink>
             </li>
-            <li>
-              <NavLink activeClassName="active" to="/categories">
-                Categories
-              </NavLink>
-            </li>
             {!isAuthenticated ? (
               <Aux>
                 <li>
@@ -217,7 +212,8 @@ class Navbar extends Component {
 Navbar.propTypes = {
   isAuthenticated: PropTypes.bool,
   user: PropTypes.object,
-  notifications: PropTypes.array
+  notifications: PropTypes.array,
+  onReadNotification: PropTypes.func
 };
 
 export default Navbar;

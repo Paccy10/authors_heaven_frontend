@@ -30,3 +30,6 @@ package-lock.json
 
 # .env
 .env
+
+#VScode configuration
+.vscode

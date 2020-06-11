@@ -14,6 +14,7 @@ import NewArticle from '../views/articles/NewArticle';
 import ViewArticle from '../views/articles/ViewArticle';
 import EditArticle from '../views/articles/EditArticle';
 import PageNotFound from '../views/errors/404';
+import Search from '../views/Search';
 
 const Routes = () => {
   return (
@@ -33,6 +34,7 @@ const Routes = () => {
         path="/articles/:articleSlug/edit"
         component={EditArticle}
       />
+      <Route path="/search" component={Search} />
       <Route exact path="*" component={PageNotFound} />
     </Switch>
   );
