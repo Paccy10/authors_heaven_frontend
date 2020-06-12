@@ -37,7 +37,7 @@ class PrivateRoute extends Component {
 }
 
 PrivateRoute.propTypes = {
-  component: PropTypes.object,
+  component: PropTypes.func,
   isAuthenticated: PropTypes.bool,
   location: PropTypes.object
 };

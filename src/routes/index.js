@@ -1,20 +1,63 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
+import AsyncComponent from '../components/hoc/AsyncComponent';
 import PrivateRoute from '../components/PrivateRoute';
-import Home from '../views/Home';
-import Login from '../views/auth/Login';
-import Signup from '../views/auth/Signup';
-import UserActivation from '../views/auth/UserActivation';
-import ForgotPassword from '../views/auth/ForgotPassword';
-import ResetPassword from '../views/auth/ResetPassword';
-import Logout from '../components/Logout';
-import ViewProfile from '../views/users/ViewProfile';
-import EditProfile from '../views/users/EditProfile';
-import NewArticle from '../views/articles/NewArticle';
-import ViewArticle from '../views/articles/ViewArticle';
-import EditArticle from '../views/articles/EditArticle';
-import PageNotFound from '../views/errors/404';
-import Search from '../views/Search';
+
+const Home = AsyncComponent(() => {
+  return import('../views/Home');
+});
+
+const Login = AsyncComponent(() => {
+  return import('../views/auth/Login');
+});
+
+const Signup = AsyncComponent(() => {
+  return import('../views/auth/Signup');
+});
+
+const UserActivation = AsyncComponent(() => {
+  return import('../views/auth/UserActivation');
+});
+
+const ForgotPassword = AsyncComponent(() => {
+  return import('../views/auth/ForgotPassword');
+});
+
+const ResetPassword = AsyncComponent(() => {
+  return import('../views/auth/ResetPassword');
+});
+
+const Logout = AsyncComponent(() => {
+  return import('../components/Logout');
+});
+
+const ViewProfile = AsyncComponent(() => {
+  return import('../views/users/ViewProfile');
+});
+
+const EditProfile = AsyncComponent(() => {
+  return import('../views/users/EditProfile');
+});
+
+const NewArticle = AsyncComponent(() => {
+  return import('../views/articles/NewArticle');
+});
+
+const ViewArticle = AsyncComponent(() => {
+  return import('../views/articles/ViewArticle');
+});
+
+const EditArticle = AsyncComponent(() => {
+  return import('../views/articles/EditArticle');
+});
+
+const PageNotFound = AsyncComponent(() => {
+  return import('../views/errors/404');
+});
+
+const Search = AsyncComponent(() => {
+  return import('../views/Search');
+});
 
 const Routes = () => {
   return (
