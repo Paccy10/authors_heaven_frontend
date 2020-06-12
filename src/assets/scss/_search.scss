@@ -9,23 +9,4 @@
       color: color(secondary);
     }
   }
-
-  .no-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    div {
-      width: 50%;
-
-      img {
-        width: 100%;
-      }
-    }
-
-    p {
-      margin-top: 20px;
-      color: color(textDark);
-    }
-  }
 }

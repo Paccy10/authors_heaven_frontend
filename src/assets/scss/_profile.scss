@@ -120,25 +120,6 @@
     }
   }
 
-  .no-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    div {
-      width: 50%;
-
-      img {
-        width: 100%;
-      }
-    }
-
-    p {
-      margin-top: 20px;
-      color: color(textDark);
-    }
-  }
-
   .follower {
     border: 1px solid #ddd;
     padding: 15px;
@@ -270,6 +251,26 @@
       @include medium_phone {
         margin-top: 20px;
       }
+    }
+  }
+}
+
+.settings-card {
+  .tabs {
+    button {
+      text-transform: none;
+    }
+  }
+
+  .notifications {
+    color: color(textDark);
+
+    h3 {
+      margin-bottom: 20px;
+    }
+
+    .form-btn {
+      margin-top: 20px;
     }
   }
 }

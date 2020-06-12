@@ -11,6 +11,7 @@ import comment from './reducers/comment';
 import rating from './reducers/rating';
 import notification from './reducers/notification';
 import search from './reducers/search';
+import settings from './reducers/settings';
 
 const rootReducer = combineReducers({
   auth,
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
   comment,
   rating,
   notification,
-  search
+  search,
+  settings
 });
 
 const store = createStore(

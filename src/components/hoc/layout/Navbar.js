@@ -186,7 +186,7 @@ class Navbar extends Component {
                         </Link>
                       </li>
                       <li>
-                        <Link to="/">
+                        <Link to="/profile/settings">
                           {' '}
                           <i className="fa fa-cog"></i> Settings
                         </Link>

@@ -59,6 +59,10 @@ const Search = AsyncComponent(() => {
   return import('../views/Search');
 });
 
+const Settings = AsyncComponent(() => {
+  return import('../views/users/Settings');
+});
+
 const Routes = () => {
   return (
     <Switch>
@@ -71,6 +75,7 @@ const Routes = () => {
       <Route path="/auth/reset-password/:token" component={ResetPassword} />
       <PrivateRoute exact path="/profile/me" component={ViewProfile} />
       <PrivateRoute path="/profile/me/edit" component={EditProfile} />
+      <PrivateRoute path="/profile/settings" component={Settings} />
       <PrivateRoute path="/articles/new" component={NewArticle} />
       <Route exact path="/articles/:articleSlug" component={ViewArticle} />
       <PrivateRoute

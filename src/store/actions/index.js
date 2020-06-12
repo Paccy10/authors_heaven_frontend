@@ -37,3 +37,4 @@ export { commentArticle, fetchArticleComments } from './comment';
 export { fetchArticleRatings, rateArticle } from './rating';
 export { fetchNotifications, readNotification } from './notification';
 export { search } from './search';
+export { subscribe } from './settings';
