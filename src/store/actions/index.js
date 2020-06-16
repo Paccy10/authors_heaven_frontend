@@ -38,3 +38,4 @@ export { fetchArticleRatings, rateArticle } from './rating';
 export { fetchNotifications, readNotification } from './notification';
 export { search } from './search';
 export { subscribe } from './settings';
+export { fetchHighlights, highlightText } from './highlight';

@@ -12,6 +12,7 @@ import rating from './reducers/rating';
 import notification from './reducers/notification';
 import search from './reducers/search';
 import settings from './reducers/settings';
+import highlight from './reducers/highlight';
 
 const rootReducer = combineReducers({
   auth,
@@ -24,7 +25,8 @@ const rootReducer = combineReducers({
   rating,
   notification,
   search,
-  settings
+  settings,
+  highlight
 });
 
 const store = createStore(

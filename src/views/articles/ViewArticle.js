@@ -16,6 +16,9 @@ import Aux from '../../components/hoc/Aux';
 import Comments from '../../components/Comments';
 import Modal from '../../components/UI/Modal';
 import Button from '../../components/UI/Button';
+import ActionsPopup from '../../components/UI/popups/Actions';
+import CommentPopup from '../../components/UI/popups/Comment';
+import { markHighlightedText } from '../../utils/markHighlightedText';
 
 class ViewArticle extends Component {
   state = {
@@ -28,7 +31,10 @@ class ViewArticle extends Component {
     rating: 0,
     loading: false,
     openDeleteModel: false,
-    follow: false
+    follow: false,
+    indexStart: '',
+    indexEnd: '',
+    text: ''
   };
 
   componentDidMount() {
@@ -36,7 +42,8 @@ class ViewArticle extends Component {
       onFetchArticle,
       match,
       onFetchArticleRatings,
-      onFetchUserFollowees
+      onFetchUserFollowees,
+      onFetchHighlights
     } = this.props;
     onFetchArticle(match.params.articleSlug).then(() => {
       const { votes, hasBookmarked, id, authorId } = this.props.article;
@@ -55,6 +62,7 @@ class ViewArticle extends Component {
               this.setState({ follow: true });
             }
           }
+          await onFetchHighlights(id);
         }
       });
       this.setState({
@@ -199,6 +207,57 @@ class ViewArticle extends Component {
     }
   };
 
+  onSelectText = () => {
+    const selection = window.getSelection();
+    const text = selection.toString();
+    const popup = document.getElementById('actions-popup');
+    if (text.length > 0) {
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      const topScroll =
+        window.pageYOffset || document.documentElement.scrollTop;
+      popup.classList.remove('hide');
+      popup.style.top = `${rect.top + topScroll - 55}px`;
+      popup.style.left = `${rect.left}px`;
+      const indexStart = selection.anchorOffset;
+      const indexEnd =
+        indexStart === 0
+          ? indexStart + text.length - 1
+          : indexStart + text.length;
+      this.setState({ indexStart, indexEnd, text });
+    } else {
+      popup.classList.add('hide');
+    }
+  };
+
+  onHighlight = () => {
+    const { isAuthenticated } = this.props;
+    if (isAuthenticated) {
+      const popup = document.getElementById('actions-popup');
+      const comment = document.getElementById('comments-popup');
+      const body = document.getElementById('body');
+      popup.classList.add('hide');
+      const selection = window.getSelection();
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      const topScroll =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const newNode = document.createElement('span');
+      newNode.classList.add('highlighted');
+      range.surroundContents(newNode);
+      comment.classList.remove('hide');
+      comment.style.top = `${rect.top + topScroll + 40}px`;
+      comment.style.left = `${rect.left}px`;
+
+      body.onmouseup = () => {
+        comment.classList.add('hide');
+        newNode.style.background = '';
+      };
+    } else {
+      this.setState({ isGuest: true });
+    }
+  };
+
   render() {
     Prism.highlightAll();
     const {
@@ -207,7 +266,10 @@ class ViewArticle extends Component {
       location,
       isAuthenticated,
       user,
-      loadingFollow
+      highlights,
+      loadingFollow,
+      onHighlightText,
+      loadingHighlights
     } = this.props;
     const author = article.author || {};
     const {
@@ -219,8 +281,17 @@ class ViewArticle extends Component {
       isGuest,
       rating,
       openDeleteModel,
-      follow
+      follow,
+      indexStart,
+      indexEnd,
+      text
     } = this.state;
+
+    const formData = {
+      indexStart,
+      indexEnd,
+      text
+    };
 
     if (isGuest) {
       return (
@@ -297,8 +368,16 @@ class ViewArticle extends Component {
                       ))}
                     </div>
                   ) : null}
-                  <div className="article-body">
-                    {article.body ? htmlParser(article.body) : null}
+                  <div
+                    id="body"
+                    className="article-body"
+                    onMouseUp={this.onSelectText}
+                  >
+                    {article.body
+                      ? htmlParser(
+                          markHighlightedText(article.body, highlights)
+                        )
+                      : null}
                   </div>
                   <div className="actions">
                     <div className="ratings">
@@ -344,6 +423,13 @@ class ViewArticle extends Component {
                     </div>
                   </div>
                   <Comments articleId={article.id} location={location} />
+                  <CommentPopup
+                    articleId={article.id}
+                    formData={formData}
+                    onHighlightText={onHighlightText}
+                    loading={loadingHighlights}
+                  />
+                  <ActionsPopup onHighlight={this.onHighlight} />
                 </Aux>
               )}
             </Paper>
@@ -399,7 +485,11 @@ ViewArticle.propTypes = {
   onFollowUser: PropTypes.func,
   onUnfollowUser: PropTypes.func,
   profileMessage: PropTypes.string,
-  loadingFollow: PropTypes.bool
+  loadingFollow: PropTypes.bool,
+  onFetchHighlights: PropTypes.func,
+  onHighlightText: PropTypes.func,
+  loadingHighlights: PropTypes.bool,
+  highlights: PropTypes.array
 };
 
 const mapStateToProps = state => ({
@@ -414,7 +504,9 @@ const mapStateToProps = state => ({
   ratings: state.rating.ratings,
   followees: state.profile.followees,
   profileMessage: state.profile.message,
-  loadingFollow: state.profile.loadingFollow
+  loadingFollow: state.profile.loadingFollow,
+  loadingHighlights: state.highlight.loading,
+  highlights: state.highlight.highlights
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -431,7 +523,10 @@ const mapDispatchToProps = dispatch => ({
   onDeleteArticle: articleId => dispatch(actions.deleteArticle(articleId)),
   onFetchUserFollowees: () => dispatch(actions.fetchUserFollowees()),
   onFollowUser: userId => dispatch(actions.followUser(userId)),
-  onUnfollowUser: userId => dispatch(actions.unfollowUser(userId))
+  onUnfollowUser: userId => dispatch(actions.unfollowUser(userId)),
+  onFetchHighlights: articleId => dispatch(actions.fetchHighlights(articleId)),
+  onHighlightText: (articleId, formData) =>
+    dispatch(actions.highlightText(articleId, formData))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewArticle);
