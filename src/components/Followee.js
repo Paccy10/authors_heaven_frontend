@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Avatar, CircularProgress } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import ReadMoreAndLess from 'react-read-more-less';
+import ReactReadMoreReadLess from 'react-read-more-read-less';
 
 class Follower extends Component {
   state = {
@@ -29,14 +29,15 @@ class Follower extends Component {
           </p>
           <div className="follower-bio">
             {followee.bio ? (
-              <ReadMoreAndLess
-                className="read-more-content"
+              <ReactReadMoreReadLess
+                readMoreClassName="read-more-content"
+                readLessClassName="read-more-content"
                 charLimit={150}
                 readMoreText="Show more"
                 readLessText="Show less"
               >
                 {followee.bio}
-              </ReadMoreAndLess>
+              </ReactReadMoreReadLess>
             ) : (
               ''
             )}

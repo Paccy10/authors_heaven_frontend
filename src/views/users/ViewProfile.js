@@ -13,7 +13,7 @@ import {
   Paper,
   CircularProgress
 } from '@material-ui/core';
-import ReadMoreAndLess from 'react-read-more-less';
+import ReactReadMoreReadLess from 'react-read-more-read-less';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import TabPanel from '../../components/UI/TabPanel';
@@ -137,14 +137,15 @@ class ViewProfile extends Component {
               <div className="bio">
                 <h2>Bio</h2>
                 {user.bio ? (
-                  <ReadMoreAndLess
-                    className="read-more-content"
+                  <ReactReadMoreReadLess
+                    readMoreClassName="read-more-content"
+                    readLessClassName="read-more-content"
                     charLimit={100}
                     readMoreText="Show more"
                     readLessText="Show less"
                   >
                     {user.bio}
-                  </ReadMoreAndLess>
+                  </ReactReadMoreReadLess>
                 ) : (
                   <div className="no-bio">No bio added yet</div>
                 )}
